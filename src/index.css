@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #d5cdcd;
 }
 
 code {
@@ -13,22 +14,26 @@ code {
 }
 
 .empty {
-  background: #f6deac;
-  border-radius: 8px;
+  background: #cd7b29;
+  border-radius: 5px;
   float: left;
   height: 50px;
   width: 50px;
   text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 0px;
 }
 
 
 .filled {
-  background: #41a4e6;
-  border-radius: 8px;
+  background: #297383;
+  border-radius: 5px;
   float: left;
   height: 50px;
   width: 50px;
   text-align: center;
+  padding: 0;
 }
 
 .board-row:after {

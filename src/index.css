@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #d5cdcd;
+  background-color: #292929;
 }
 
 code {
@@ -13,31 +13,54 @@ code {
     monospace;
 }
 
-.empty {
-  background: #cd7b29;
+.square {
   border-radius: 5px;
+  border: none;
   float: left;
-  height: 50px;
-  width: 50px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 0px;
-}
-
-
-.filled {
-  background: #297383;
-  border-radius: 5px;
-  float: left;
-  height: 50px;
-  width: 50px;
+  height: 48px;
+  width: 48px;
   text-align: center;
   padding: 0;
+  margin-right: 3px;
+  margin-top: 3px;
+}
+
+.tile {
+  background: black;
+}
+
+.land {
+  background: #cd7b29;
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  font: "Helvetica Neue", Helvetica, Arial;
+}
+
+.water {
+  background: #297383;
 }
 
 .board-row:after {
   clear: both;
   content: '';
   display: table;
+}
+
+.status {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 30px;
+  font: "Helvetica Neue", Helvetica, Arial;
+  color: #297383;
+
+}
+
+.board-area {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }

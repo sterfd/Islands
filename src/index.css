@@ -26,12 +26,12 @@ code {
 }
 
 .tile {
-  background: black;
+  background: #181818;
 }
 
 .land {
   background: #cd7b29;
-  color: white;
+  color: #F5F5F5;
   font-size: 25px;
   font-weight: bold;
   font: "Helvetica Neue", Helvetica, Arial;
@@ -64,3 +64,29 @@ code {
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
+.game-menu {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.menu {
+  background: #297383;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  float: left;
+  height: 48px;
+  width: 48px;
+  text-align: center;
+  padding: 0;
+  margin-right: 3px;
+  margin-top: 3px;
+}
+
+.restart {}
+
+.new-game {}

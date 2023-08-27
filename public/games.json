@@ -1,9 +1,7 @@
 {
     "games": [
         {
-            "id": 1,
-            "numSolved": 0,
-            "averageTime": 0,
+            "id": 102345,
             "size": 5,
             "board": [
                 [
@@ -81,9 +79,7 @@
             ]
         },
         {
-            "id": 2,
-            "numSolved": 0,
-            "averageTime": 0,
+            "id": 23053,
             "size": 5,
             "board": [
                 [
@@ -161,9 +157,7 @@
             ]
         },
         {
-            "id": 4,
-            "numSolved": 0,
-            "averageTime": 0,
+            "id": 203527,
             "size": 5,
             "board": [
                 [
@@ -242,8 +236,6 @@
         },
         {
             "id": 5,
-            "numSolved": 0,
-            "averageTime": 0,
             "size": 5,
             "board": [
                 [

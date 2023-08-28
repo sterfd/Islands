@@ -1,5 +1,5 @@
 import React from 'react';
-import { Game } from "./test";
+import { Game } from "./Board";
 
 export default function App() {
   return (

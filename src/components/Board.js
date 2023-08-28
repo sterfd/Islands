@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// import { openDatabase } from 'react-native-sqlite-storage';
 import _ from 'lodash';
-import '../cs/board.css';
+import '../css/board.css';
 
 function Square({ value, onSquareClick }) {
     if (value === 0) {

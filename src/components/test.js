@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import _ from 'lodash';
-import '../css/board.css';
 
 function Square({ value }) {
     if (value === -2) {
@@ -28,21 +28,12 @@ function Board({ squares, onPlay, solution }) {
     );
 }
 
-async function fetchData() {
-    const response = await fetch('./games.json');
-    const data = await response.json();
-    return data;
-}
-
 async function NewGame() {
-    const gameData = await fetchData();
-    const selectedGameID = Math.floor(Math.random() * (gameData.games.length - 1));
-    const selectedGame = gameData.games[selectedGameID];
-    const starting = selectedGame.board;
-    const solution = selectedGame.solution;
-    const initialSquares = _.cloneDeep(starting);
-
-    return { starting, solution, initialSquares };
+    const { data } = await axios.get('http://localhost:8888/games');
+    console.log(data);
+    const starting = JSON.parse(data.board);
+    const solution = JSON.parse(data.solution);
+    return { starting, solution };
 }
 
 function Game() {
@@ -51,25 +42,31 @@ function Game() {
     const [solutionBoard, setSolutionBoard] = useState([]);
 
     useEffect(() => {
-        getNewGame()
+        getNewGame();
     }, []);
 
-    function getNewGame() {
-        NewGame().then(({ starting, solution, initialSquares }) => {
-            setStartingBoard(starting);
-            setSolutionBoard(solution);
-            setSquares(initialSquares);
-        });
+    // if (startingBoard.length === 0 || solutionBoard.length === 0) {
+    //     return <div>Loading...</div>;
+    // }
+    async function getNewGame() {
+        const { starting, solution } = await NewGame();
+        setStartingBoard(starting);
+        setSolutionBoard(solution);
+        setSquares(_.cloneDeep(starting));
     }
 
-    if (startingBoard.length === 0 || solutionBoard.length === 0) {
-        return <div>Loading...</div>;
+    function restartGame(startingBoard) {
+        const startingCopy = _.cloneDeep(startingBoard);
+        setSquares(startingCopy);
     }
-
     return (
         <div className='game'>
             <div className='game-board'>
                 <Board squares={squares} />
+            </div>
+            <div className='game-menu'>
+                <button className='menu restart' onClick={() => restartGame(startingBoard)}>Restart</button>
+                <button className='menu new-game' onClick={() => getNewGame()}>New Game</button>
             </div>
         </div>
     );

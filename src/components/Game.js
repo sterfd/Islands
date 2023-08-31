@@ -33,6 +33,8 @@ export function Game() {
         setStartingBoard(starting);
         setSolutionBoard(solution);
         setSquares(_.cloneDeep(starting));
+        setTimerReset(true);
+        setTimerRunning(false);
     }
 
     useEffect(() => {

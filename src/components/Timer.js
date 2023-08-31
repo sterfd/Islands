@@ -5,9 +5,8 @@ import React, { useState, useEffect } from 'react';
 // timer restarts if restart or new game button is clicked
 // timer stops when game is solved
 
-export function Timer(isRunning, isReset) {
+export function Timer({ isRunning, isReset }) {
     const [time, setTime] = useState(0);
-    // console.log('timer change', isRunning, isReset);
     useEffect(() => {
         let interval;
         if (isRunning) {
@@ -23,10 +22,6 @@ export function Timer(isRunning, isReset) {
         return () => clearInterval(interval);
     }, [isRunning, isReset]);
 
-    //isTiming - running true
-    //resetTimer - running false setTime 0
-
-
     const hours = Math.floor((time / 3600) % 60);
     const minutes = Math.floor((time / 60) % 60);
     const seconds = Math.floor(time % 60);
@@ -38,11 +33,6 @@ export function Timer(isRunning, isReset) {
                 <span>{('0' + minutes).slice(-2)}:</span>
                 <span>{('0' + seconds).slice(-2)}</span>
             </div>
-            {/* <div>
-                <button onClick={() => setRunning(true)}>Start</button>
-                <button onClick={() => setRunning(false)}>Stop</button>
-                <button onClick={() => setTime(0)}>Reset</button>
-            </div> */}
         </div>
     );
 };

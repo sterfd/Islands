@@ -54,7 +54,10 @@ code {
   font-size: 30px;
   font: "Helvetica Neue", Helvetica, Arial;
   color: #297383;
+}
 
+.timer {
+  color: white;
 }
 
 .board-area {

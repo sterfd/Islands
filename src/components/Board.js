@@ -1,20 +1,10 @@
 import React from 'react';
 import { Square } from './Square';
 
-export function Board({ squares, onPlay, solution }) {
-    function checkWinner(squares, solution) {
-        const squaresString = JSON.stringify(squares);
-        const solutionString = JSON.stringify(solution);
-        if (squaresString === solutionString) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+export function Board({ squares, onPlay, isComplete }) {
     function handleClick(event, row, col) {
         event.preventDefault();
-        if (winning || squares[row][col] > 0) {
+        if (isComplete || squares[row][col] > 0) {
             return;
         }
 
@@ -29,9 +19,8 @@ export function Board({ squares, onPlay, solution }) {
         }
     }
 
-    const winning = checkWinner(squares, solution);
     let status;
-    if (winning) {
+    if (isComplete) {
         status = 'WINNER';
     }
 

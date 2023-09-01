@@ -9,23 +9,20 @@ export function Game() {
     const [startingBoard, setStartingBoard] = useState([]);
     const [solutionBoard, setSolutionBoard] = useState([]);
     const [isTimerRunning, setTimerRunning] = useState(false);
-    const [isTimerReset, setTimerReset] = useState(false);
+    const [seconds, setSeconds] = useState(0);
 
     function handlePlay(nextSquares) {
         setSquares(nextSquares);
         if (!isTimerRunning) {
             setTimerRunning(true);
-            setTimerReset(false);
         }
-        console.log('click', isTimerRunning, isTimerReset);
-
     }
 
     function restartGame(startingBoard) {
         const startingCopy = _.cloneDeep(startingBoard);
         setSquares(startingCopy);
-        setTimerReset(true);
         setTimerRunning(false);
+        setSeconds(0);
     }
 
     async function getNewGame() {
@@ -33,19 +30,30 @@ export function Game() {
         setStartingBoard(starting);
         setSolutionBoard(solution);
         setSquares(_.cloneDeep(starting));
-        setTimerReset(true);
         setTimerRunning(false);
+        setSeconds(0);
     }
 
     useEffect(() => {
         getNewGame()
     }, []);
 
+    useEffect(() => {
+        let interval;
+        if (isTimerRunning) {
+            interval = setInterval(() => {
+                setSeconds(prevSeconds => prevSeconds + 1);
+            }, 1000);
+        } else if (!isTimerRunning) {
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [isTimerRunning]);
+
     return (
         <div className='game'>
             <div className='status'>
-                {/* timer, puzzle id */}
-                <Timer isRunning={isTimerRunning} isReset={isTimerReset} />
+                <Timer seconds={seconds} />
             </div>
             <div className='game-board'>
                 <Board squares={squares} onPlay={handlePlay} solution={solutionBoard} />

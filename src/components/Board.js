@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash'; // deep copying arrays
 import { Square } from './Square';
 
 export function Board({ squares, onPlay, isComplete }) {
@@ -8,7 +9,7 @@ export function Board({ squares, onPlay, isComplete }) {
             return;
         }
 
-        const nextSquares = [...squares];
+        const nextSquares = _.cloneDeep(squares);
         const clickMapping = { 0: [-2, 0, -1], '-1': [0, 0, -2], '-2': [-1, 0, 0] };
         const nextState = clickMapping[squares[row][col]];
 

@@ -3,9 +3,16 @@ import _ from 'lodash'; // deep copying arrays
 import { Board } from './Board';
 import { NewGame } from './NewGame';
 import { Timer } from './Timer';
+import { Link } from 'react-router-dom';
+import home from '../images/home-button.png';
+import restart from '../images/restart-button.png';
+import newGameButton from '../images/new-button.png';
+import undoButton from '../images/undo-button.png';
+import checkButton from '../images/check-button.png';
+import rules from '../images/rules-button.png';
 
-export function Game() {
-    // const [squares, setSquares] = useState([]);
+
+export default function Game() {
     const [startingBoard, setStartingBoard] = useState([]);
     const [solutionBoard, setSolutionBoard] = useState([]);
     const [isTimerRunning, setTimerRunning] = useState(false);
@@ -52,16 +59,16 @@ export function Game() {
         setSeconds(0);
     }
 
-    function checkWinner() {
-        const squaresString = JSON.stringify(currentSquares);
-        const solutionString = JSON.stringify(solutionBoard);
-        if (squaresString === solutionString) {
-            setIsComplete(true);
-            setTimerRunning(false);
-        } else {
-            setIsComplete(false);
-        }
-    }
+    // function checkWinner() {
+    //     const squaresString = JSON.stringify(currentSquares);
+    //     const solutionString = JSON.stringify(solutionBoard);
+    //     if (squaresString === solutionString) {
+    //         setIsComplete(true);
+    //         setTimerRunning(false);
+    //     } else {
+    //         setIsComplete(false);
+    //     }
+    // }
 
     useEffect(() => {
         getNewGame()
@@ -80,8 +87,15 @@ export function Game() {
     }, [isTimerRunning]);
 
     useEffect(() => {
-        checkWinner();
-    }, [currentSquares]);
+        const squaresString = JSON.stringify(currentSquares);
+        const solutionString = JSON.stringify(solutionBoard);
+        if (squaresString === solutionString) {
+            setIsComplete(true);
+            setTimerRunning(false);
+        } else {
+            setIsComplete(false);
+        }
+    }, [currentSquares, solutionBoard]);
 
     useEffect(() => {
         setCurrentSquares(history[currentMove]);
@@ -96,12 +110,26 @@ export function Game() {
                 <Board squares={currentSquares} onPlay={handlePlay} isComplete={isComplete} />
             </div>
             <div className='game-menu'>
-                <button className='menu restart' onClick={() => restartGame(startingBoard)}>Restart</button>
-                <button className='menu new-game' onClick={() => getNewGame()}>New Game</button>
-                <button className='menu undo' onClick={() => jumpTo(currentMove - 1)}>Undo</button>
-                <button className='menu check'>Check</button>
-                <button className='menu rules'>Rules</button>
-                <button className='menu home'>Home</button>
+                <Link style={{ textDecoration: 'none' }} to='/MainMenu'>
+                    <button className='bar'>
+                        <img className='home' src={home} alt=''></img>
+                    </button>
+                </Link>
+                <button className='bar' onClick={() => restartGame(startingBoard)}>
+                    <img className='restart' src={restart} alt=''></img>
+                </button>
+                <button className='bar' onClick={() => getNewGame()}>
+                    <img className='new' src={newGameButton} alt=''></img>
+                </button>
+                <button className='bar' onClick={() => jumpTo(currentMove - 1)}>
+                    <img className='undo' src={undoButton} alt=''></img>
+                </button>
+                <button className='bar'>
+                    <img className='check' src={checkButton} alt=''></img>
+                </button>
+                <button className='bar'>
+                    <img className='rules' src={rules} alt=''></img>
+                </button>
             </div>
         </div>
     );

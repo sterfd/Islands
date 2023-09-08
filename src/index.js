@@ -21,7 +21,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="MainMenu" index element={<MainMenu />} />
+        <Route path="/" index element={<MainMenu />} />
         <Route path="About" element={<About />} />
         <Route path="Rules" element={<Rules />} />
         <Route path="Play" element={<Play />} />

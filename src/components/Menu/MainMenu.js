@@ -19,8 +19,6 @@ export default function MainMenu() {
                 <Link className='main about' style={{ textDecoration: 'none' }} to='/About'>
                     About
                 </Link>
-
-
             </div>
         </div>
     );

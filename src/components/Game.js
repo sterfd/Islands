@@ -3,7 +3,7 @@ import _ from 'lodash'; // deep copying arrays
 import { Board } from './Board';
 import { NewGame } from './NewGame';
 import { Timer } from './Timer';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import home from '../images/home-button.png';
 import restart from '../images/restart-button.png';
 import newGameButton from '../images/new-button.png';
@@ -21,6 +21,8 @@ export default function Game() {
     const [history, setHistory] = useState([[]]);
     const [currentMove, setCurrentMove] = useState(0);
     const [currentSquares, setCurrentSquares] = useState(history[currentMove]);
+    const { state } = useLocation();
+    const boardSize = state.size;
 
     function handlePlay(nextSquares) {
         const historyCopy = _.cloneDeep(history);
@@ -48,8 +50,8 @@ export default function Game() {
         setSeconds(0);
     }
 
-    async function getNewGame() {
-        const { starting, solution } = await NewGame();
+    async function getNewGame(size) {
+        const { starting, solution } = await NewGame(size);
         const startingCopy = _.cloneDeep(starting);
         setStartingBoard(starting);
         setSolutionBoard(solution);
@@ -71,7 +73,7 @@ export default function Game() {
     // }
 
     useEffect(() => {
-        getNewGame()
+        getNewGame(boardSize)
     }, []);
 
     useEffect(() => {
@@ -110,7 +112,7 @@ export default function Game() {
                 <Board squares={currentSquares} onPlay={handlePlay} isComplete={isComplete} />
             </div>
             <div className='game-menu'>
-                <Link style={{ textDecoration: 'none' }} to='/MainMenu'>
+                <Link style={{ textDecoration: 'none' }} to='/'>
                     <button className='bar'>
                         <img className='home' src={home} alt=''></img>
                     </button>

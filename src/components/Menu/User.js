@@ -5,7 +5,7 @@ export default function User() {
     return (
         <div className='sub-menu'>
             <p>User Auth Page</p>
-            <Link className='main' style={{ textDecoration: 'none' }} to='/MainMenu'>Main Menu
+            <Link className='main' style={{ textDecoration: 'none' }} to='/'>Main Menu
             </Link>
         </div>
     );

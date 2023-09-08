@@ -12,6 +12,7 @@
     "helmet": "^7.0.0",
     "knex": "^2.5.1",
     "lodash": "^4.17.21",
+    "puppeteer": "^21.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",

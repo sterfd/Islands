@@ -4,11 +4,12 @@ import sqlite3
 import random
 
 
-def get_puzzle():
+def get_puzzle(num):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        page.goto("https://www.logicgamesonline.com/nurikabe/")
+        url = "https://www.logicgamesonline.com/nurikabe/archive.php?pid=" + str(num)
+        page.goto(url)
         page.wait_for_selector("#container")
 
         solution = page.evaluate("() => solpuz")
@@ -18,18 +19,18 @@ def get_puzzle():
 
 
 def puz_str_to_array(puz, sol):
-    puzzle_array = [[-2 for _ in range(5)] for _ in range(5)]
-    solution_array = [[0 for _ in range(5)] for _ in range(5)]
+    puzzle_array = [[-2 for _ in range(n)] for _ in range(n)]
+    solution_array = [[0 for _ in range(n)] for _ in range(n)]
 
     for idx, ch in enumerate(puz):
         if ch.isnumeric():
-            puzzle_array[idx // 5][idx % 5] = int(ch)
+            puzzle_array[idx // n][idx % n] = int(ch)
 
     for idx, ch in enumerate(sol):
         if ch.isnumeric():
-            solution_array[idx // 5][idx % 5] = int(ch)
+            solution_array[idx // n][idx % n] = int(ch)
         elif ch == " ":
-            solution_array[idx // 5][idx % 5] = -1
+            solution_array[idx // n][idx % n] = -1
     return (puzzle_array, solution_array)
 
 
@@ -39,13 +40,14 @@ def puz_str_to_array(puz, sol):
 #         parray, sarray = puz_str_to_array(puzzle, solution)
 #         f.write(str(parray) + str(sarray) + "\n")
 
-
-puzzle_array, solution_array = [], []
-for _ in range(10):
-    puzzle, solution = get_puzzle()
-    parray, sarray = puz_str_to_array(puzzle, solution)
-    puzzle_array.append(parray)
-    solution_array.append(sarray)
+num = random.randint(8, 6420)
+puzzle, solution = get_puzzle(num)
+print(puzzle)
+print(solution)
+n = int(len(puzzle) ** 0.5)
+parray, sarray = puz_str_to_array(puzzle, solution)
+print(parray)
+print(sarray)
 
 
 def read_db():
@@ -54,12 +56,11 @@ def read_db():
         cursor = sqliteConnection.cursor()
         print("connected!!")
 
-        for idx in range(10):
-            rand = random.randint(0, 1000000)
-            query = "INSERT INTO Games (id, size, board, solution) VALUES ({0}, 5, '{1}', '{2}')".format(
-                rand, puzzle_array[idx], solution_array[idx]
-            )
-            cursor.execute(query)
+        rand = random.randint(0, 1000000)
+        query = "INSERT INTO Games (id, size, board, solution) VALUES ({0}, {1}, '{2}', '{3}')".format(
+            rand, n, parray, sarray
+        )
+        cursor.execute(query)
         sqliteConnection.commit()
         print("successfully inserted!")
         cursor.close()

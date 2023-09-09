@@ -6,13 +6,13 @@ import { Timer } from './Timer';
 import { Link, useLocation } from 'react-router-dom';
 import home from '../images/home-button.png';
 import restart from '../images/restart-button.png';
-import newGameButton from '../images/new-button.png';
 import undoButton from '../images/undo-button.png';
 import checkButton from '../images/check-button.png';
 import rules from '../images/rules-button.png';
 
 
 export default function Game() {
+    const [puzzleID, setPuzzleID] = useState(0)
     const [startingBoard, setStartingBoard] = useState([]);
     const [solutionBoard, setSolutionBoard] = useState([]);
     const [isTimerRunning, setTimerRunning] = useState(false);
@@ -31,6 +31,20 @@ export default function Game() {
         setCurrentMove(nextHistory.length - 1);
         if (!isTimerRunning) {
             setTimerRunning(true);
+        }
+        checkWinner(nextSquares);
+    }
+
+    function checkWinner(nextSquares) {
+        const squaresString = JSON.stringify(nextSquares);
+        const solutionString = JSON.stringify(solutionBoard);
+        if (squaresString === solutionString && seconds !== 0) {
+            const today = new Date();
+            setIsComplete(true);
+            setTimerRunning(false);
+            console.log({ puzzleID }, { seconds }, today.getDate(), today.getMonth() + 1, today.getFullYear());
+        } else {
+            setIsComplete(false);
         }
     }
 
@@ -51,8 +65,9 @@ export default function Game() {
     }
 
     async function getNewGame(size) {
-        const { starting, solution } = await NewGame(size);
+        const { gameID, starting, solution } = await NewGame(size);
         const startingCopy = _.cloneDeep(starting);
+        setPuzzleID(gameID);
         setStartingBoard(starting);
         setSolutionBoard(solution);
         setHistory([startingCopy]);
@@ -61,20 +76,10 @@ export default function Game() {
         setSeconds(0);
     }
 
-    // function checkWinner() {
-    //     const squaresString = JSON.stringify(currentSquares);
-    //     const solutionString = JSON.stringify(solutionBoard);
-    //     if (squaresString === solutionString) {
-    //         setIsComplete(true);
-    //         setTimerRunning(false);
-    //     } else {
-    //         setIsComplete(false);
-    //     }
-    // }
-
     useEffect(() => {
         getNewGame(boardSize)
     }, []);
+
 
     useEffect(() => {
         let interval;
@@ -88,16 +93,6 @@ export default function Game() {
         return () => clearInterval(interval);
     }, [isTimerRunning]);
 
-    useEffect(() => {
-        const squaresString = JSON.stringify(currentSquares);
-        const solutionString = JSON.stringify(solutionBoard);
-        if (squaresString === solutionString) {
-            setIsComplete(true);
-            setTimerRunning(false);
-        } else {
-            setIsComplete(false);
-        }
-    }, [currentSquares, solutionBoard]);
 
     useEffect(() => {
         setCurrentSquares(history[currentMove]);
@@ -119,9 +114,6 @@ export default function Game() {
                 </Link>
                 <button className='bar' onClick={() => restartGame(startingBoard)}>
                     <img className='restart' src={restart} alt=''></img>
-                </button>
-                <button className='bar' onClick={() => getNewGame()}>
-                    <img className='new' src={newGameButton} alt=''></img>
                 </button>
                 <button className='bar' onClick={() => jumpTo(currentMove - 1)}>
                     <img className='undo' src={undoButton} alt=''></img>

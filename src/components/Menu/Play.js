@@ -15,6 +15,8 @@ export default function Play() {
                     9
                 </Link>
             </div>
+            <Link className='main' style={{ textDecoration: 'none' }} to='/'>Main Menu
+            </Link>
         </div>
     );
 

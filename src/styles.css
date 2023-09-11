@@ -99,7 +99,7 @@ code {
 
 .restart {
   scale: 45%;
-  transform: translate(-62%, -35%);
+  transform: translate(-50%, -53%);
 }
 
 .home {
@@ -107,24 +107,19 @@ code {
   transform: translate(-82%, -82%);
 }
 
-.new {
-  scale: 40%;
-  transform: translate(-62%, -50%);
-}
-
 .undo {
-  scale: 42%;
-  transform: translate(-53%, -55%);
+  scale: 70%;
+  transform: translate(-17%, -12%);
 }
 
 .check {
-  scale: 42%;
-  transform: translate(-42%, -58%);
+  scale: 75%;
+  transform: translate(-17%, -17%);
 }
 
 .rules {
-  scale: 35%;
-  transform: translate(-65%, -75%);
+  scale: 70%;
+  transform: translate(-15%, -15%);
 }
 
 /* MAIN MENU */
@@ -180,6 +175,7 @@ code {
 
 .flexbox {
   display: flex;
+  justify-content: center;
 }
 
 .play {
@@ -200,4 +196,47 @@ code {
 
 p {
   color: #e6ac5a;
+}
+
+.overlay-background {
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 9;
+}
+
+.overlay-container {
+  /* background-color: white; */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 10;
+  padding: 30px;
+  width: fit-content;
+  height: fit-content;
+}
+
+.overlay-close {
+  border: none;
+  background-color: transparent;
+  font-size: 36px;
+  cursor: pointer;
+}
+
+.overlay-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.winning {
+  display: flex;
+
 }

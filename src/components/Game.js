@@ -5,6 +5,7 @@ import { Board } from './Board';
 import { NewGame } from './NewGame';
 import { Timer } from './Timer';
 import { PostGame } from './PostGame';
+import { Overlay } from './Overlay';
 import home from '../images/home-button.png';
 import restart from '../images/restart-button.png';
 import undoButton from '../images/undo-button.png';
@@ -74,6 +75,7 @@ export default function Game() {
         setCurrentMove(0);
         setTimerRunning(false);
         setSeconds(0);
+        setIsComplete(false);
     }
 
     useEffect(() => {
@@ -125,6 +127,7 @@ export default function Game() {
                     <img className='rules' src={rules} alt=''></img>
                 </button>
             </div>
+            <Overlay isOpen={isComplete} time={seconds} id={puzzleID} currentSize={boardSize} playAgain={getNewGame}></Overlay>
         </div>
     );
 }

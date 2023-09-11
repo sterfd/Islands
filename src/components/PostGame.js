@@ -16,3 +16,7 @@ export function PostGame(id, time) {
         });
 
 }
+
+// winning menu should show: Congrats! You solve this puzzle in xxx hours, xx minutes, and x seconds. 
+// The average solve time for this puzzle is ___ time.
+// Play again button. Main Menu button

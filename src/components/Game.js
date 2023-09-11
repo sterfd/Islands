@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import _ from 'lodash'; // deep copying arrays
 import { Board } from './Board';
 import { NewGame } from './NewGame';
 import { Timer } from './Timer';
-import { Link, useLocation } from 'react-router-dom';
+import { PostGame } from './PostGame';
 import home from '../images/home-button.png';
 import restart from '../images/restart-button.png';
 import undoButton from '../images/undo-button.png';
@@ -39,10 +40,9 @@ export default function Game() {
         const squaresString = JSON.stringify(nextSquares);
         const solutionString = JSON.stringify(solutionBoard);
         if (squaresString === solutionString && seconds !== 0) {
-            const today = new Date();
             setIsComplete(true);
             setTimerRunning(false);
-            console.log({ puzzleID }, { seconds }, today.getDate(), today.getMonth() + 1, today.getFullYear());
+            PostGame(puzzleID, seconds);
         } else {
             setIsComplete(false);
         }

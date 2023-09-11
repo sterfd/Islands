@@ -19,7 +19,7 @@ server.get('/games/:boardsize', async (req, res) => {
     // GET a random game with boardsize nxn
     try {
         const games = await db.select('*').where({ size: req.params.boardsize }).from('games');
-        const selectedGame = Math.floor(Math.random() * (Object.keys(games).length));
+        const selectedGame = Math.floor(Math.random() * (games.length));
         res.json(games[selectedGame]);
     } catch (err) {
         console.log(err);
@@ -27,8 +27,16 @@ server.get('/games/:boardsize', async (req, res) => {
 });
 
 
-server.post('/game_metrics', (req, res) => {
+server.post('/game_metrics', async (req, res) => {
     // POST game stats
+    const postData = req.body;
+
+    try {
+        const metrics = await db('game_metrics').insert(postData);
+        res.status(201).json(postData);
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating new game metric', error: err })
+    }
 });
 
 

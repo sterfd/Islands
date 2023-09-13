@@ -20,14 +20,8 @@ export function Board({ squares, onPlay, isComplete }) {
         }
     }
 
-    let status;
-    if (isComplete) {
-        status = 'WINNER';
-    }
-
     return (
         <div className='board-area'>
-            <div className='status'>{status}</div>
             <div>
                 {squares.map((row, rowIndex) => (
                     <div className='board-row' key={rowIndex}>

@@ -73,3 +73,6 @@ def read_db():
 
 
 read_db()
+
+
+# UPDATE COMPUTED GAME METRICS AFTER SCRAPING

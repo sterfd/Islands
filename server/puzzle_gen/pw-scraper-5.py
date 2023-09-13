@@ -33,22 +33,7 @@ def puz_str_to_array(puz, sol):
     return (puzzle_array, solution_array)
 
 
-# with open("puzzles-5.txt", "a") as f:
-#     for _ in range(10):
-#         puzzle, solution = get_puzzle()
-#         parray, sarray = puz_str_to_array(puzzle, solution)
-#         f.write(str(parray) + str(sarray) + "\n")
-
-
-puzzle_array, solution_array = [], []
-for _ in range(10):
-    puzzle, solution = get_puzzle()
-    parray, sarray = puz_str_to_array(puzzle, solution)
-    puzzle_array.append(parray)
-    solution_array.append(sarray)
-
-
-def read_db():
+def insert_into_db():
     try:
         sqliteConnection = sqlite3.connect("../api/islands.db")
         cursor = sqliteConnection.cursor()
@@ -71,4 +56,14 @@ def read_db():
             print("connection closed")
 
 
-read_db()
+# puzzle_array, solution_array = [], []
+# for _ in range(10):
+#     puzzle, solution = get_puzzle()
+#     parray, sarray = puz_str_to_array(puzzle, solution)
+#     puzzle_array.append(parray)
+#     solution_array.append(sarray)
+
+# insert_into_db()
+
+
+# UPDATE COMPUTED GAME METRICS AFTER SCRAPING

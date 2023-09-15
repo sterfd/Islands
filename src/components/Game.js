@@ -7,6 +7,7 @@ import { Timer } from './Timer';
 import { PostGame } from './PostGame';
 import { Overlay } from './Overlay';
 import { GameMenu } from './GameMenu';
+import { Rules } from './Rules';
 
 export default function Game() {
     const [puzzleID, setPuzzleID] = useState(0)
@@ -19,6 +20,7 @@ export default function Game() {
     const [currentMove, setCurrentMove] = useState(0);
     const [currentSquares, setCurrentSquares] = useState(history[currentMove]);
     const [averageTime, setAverageTime] = useState(0);
+    const [isRulesOpen, setIsRulesOpen] = useState(false);
     const { state } = useLocation();
     const boardSize = state.size;
 
@@ -74,6 +76,10 @@ export default function Game() {
         setAverageTime(averageSolveTime);
     }
 
+    const toggleRules = () => {
+        setIsRulesOpen(!isRulesOpen);
+    }
+
     async function getNewGame() {
         await NewGame(boardSize, handleNewGame);
     }
@@ -107,8 +113,9 @@ export default function Game() {
             <div className='game-board'>
                 <Board squares={currentSquares} onPlay={handlePlay} isComplete={isComplete} />
             </div>
-            <GameMenu onRestartGame={handleRestartGame} onJumpTo={handleJumpTo} currentMove={currentMove} />
+            <GameMenu onRestartGame={handleRestartGame} onJumpTo={handleJumpTo} currentMove={currentMove} toggleRules={toggleRules} />
             <Overlay isOpen={isComplete} time={seconds} currentSize={boardSize} playAgain={getNewGame} averageTime={averageTime}></Overlay>
+            <Rules isRulesOpen={isRulesOpen} toggleRules={toggleRules} />
         </div>
     );
 }

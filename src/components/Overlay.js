@@ -34,13 +34,12 @@ export function Overlay({ isOpen, time, currentSize, playAgain, averageTime }) {
     return (
         <div>
             {isOpen && (
-                <div className='overlay'>
+                <div>
                     <div className='overlay-background' />
                     <div className='overlay-container'>
-                        <button className='overlay-close' />
                         <p className='status'>Congratulations on solving the puzzle in {timeMessage}</p>
                         <p className='status'>{avgTimeMessage}</p>
-                        <div className='overlay-box'>
+                        <div className='overlay-button-box'>
                             <Link className='main winning' style={{ textDecoration: 'none' }} to='/'>Main Menu
                             </Link>
                             <button className='main winning' onClick={() => playAgain(currentSize)}>

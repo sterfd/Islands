@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import _ from 'lodash'; // deep copying arrays
 import { Board } from './Board';
 import { NewGame } from './NewGame';
 import { Timer } from './Timer';
 import { PostGame } from './PostGame';
 import { Overlay } from './Overlay';
-import home from '../images/home-button.png';
-import restart from '../images/restart-button.png';
-import undoButton from '../images/undo-button.png';
-import checkButton from '../images/check-button.png';
-import rules from '../images/rules-button.png';
-
+import { GameMenu } from './GameMenu';
 
 export default function Game() {
     const [puzzleID, setPuzzleID] = useState(0)
@@ -23,6 +18,7 @@ export default function Game() {
     const [history, setHistory] = useState([[]]);
     const [currentMove, setCurrentMove] = useState(0);
     const [currentSquares, setCurrentSquares] = useState(history[currentMove]);
+    const [averageTime, setAverageTime] = useState(0);
     const { state } = useLocation();
     const boardSize = state.size;
 
@@ -49,7 +45,7 @@ export default function Game() {
         }
     }
 
-    function jumpTo(lastMove) {
+    function handleJumpTo(lastMove) {
         if (lastMove > -1 && !isComplete) {
             setCurrentMove(lastMove);
             const historyCopy = _.cloneDeep(history);
@@ -58,17 +54,16 @@ export default function Game() {
         }
     }
 
-    function restartGame(startingBoard) {
+    function handleRestartGame() {
         setCurrentMove(0);
         setHistory(_.cloneDeep([startingBoard]));
         setTimerRunning(false);
         setSeconds(0);
     }
 
-    async function getNewGame(size) {
-        const { gameID, starting, solution } = await NewGame(size);
+    function handleNewGame(puzzleID, starting, solution, averageSolveTime) {
         const startingCopy = _.cloneDeep(starting);
-        setPuzzleID(gameID);
+        setPuzzleID(puzzleID);
         setStartingBoard(starting);
         setSolutionBoard(solution);
         setHistory([startingCopy]);
@@ -76,10 +71,16 @@ export default function Game() {
         setTimerRunning(false);
         setSeconds(0);
         setIsComplete(false);
+        setAverageTime(averageSolveTime);
+    }
+
+    async function getNewGame() {
+        await NewGame(boardSize, handleNewGame);
     }
 
     useEffect(() => {
-        getNewGame(boardSize)
+        getNewGame();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -89,8 +90,6 @@ export default function Game() {
             interval = setInterval(() => {
                 setSeconds(prevSeconds => prevSeconds + 1);
             }, 1000);
-        } else if (!isTimerRunning) {
-            clearInterval(interval);
         }
         return () => clearInterval(interval);
     }, [isTimerRunning]);
@@ -108,26 +107,8 @@ export default function Game() {
             <div className='game-board'>
                 <Board squares={currentSquares} onPlay={handlePlay} isComplete={isComplete} />
             </div>
-            <div className='game-menu'>
-                <Link style={{ textDecoration: 'none' }} to='/'>
-                    <button className='bar'>
-                        <img className='home' src={home} alt=''></img>
-                    </button>
-                </Link>
-                <button className='bar' onClick={() => restartGame(startingBoard)}>
-                    <img className='restart' src={restart} alt=''></img>
-                </button>
-                <button className='bar' onClick={() => jumpTo(currentMove - 1)}>
-                    <img className='undo' src={undoButton} alt=''></img>
-                </button>
-                <button className='bar'>
-                    <img className='check' src={checkButton} alt=''></img>
-                </button>
-                <button className='bar'>
-                    <img className='rules' src={rules} alt=''></img>
-                </button>
-            </div>
-            <Overlay isOpen={isComplete} time={seconds} id={puzzleID} currentSize={boardSize} playAgain={getNewGame}></Overlay>
+            <GameMenu onRestartGame={handleRestartGame} onJumpTo={handleJumpTo} currentMove={currentMove} />
+            <Overlay isOpen={isComplete} time={seconds} currentSize={boardSize} playAgain={getNewGame} averageTime={averageTime}></Overlay>
         </div>
     );
 }

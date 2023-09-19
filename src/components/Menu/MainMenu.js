@@ -10,7 +10,7 @@ export default function MainMenu() {
                 <Link className='main play' style={{ textDecoration: 'none' }} to='/Play'>
                     Play
                 </Link>
-                <Link className='main rule' style={{ textDecoration: 'none' }} to='/Rules'>
+                <Link className='main rule' style={{ textDecoration: 'none' }} to='/Tutorial'>
                     Rules
                 </Link>
                 <Link className='main user' style={{ textDecoration: 'none' }} to='/User'>

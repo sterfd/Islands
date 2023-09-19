@@ -62,7 +62,7 @@ code {
 
 .status {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
   font-weight: bold;
   font-size: 30px;
   font: "Helvetica Neue", Helvetica, Arial;
@@ -259,4 +259,55 @@ h2 {
 
 .rules-container {
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* TUTORIAL PAGES */
+.tut-main-container {
+  position: absolute;
+  top: 90%;
+  right: 10%;
+  transform: translate(-10%, -90%);
+}
+
+.tut-area {
+  position: absolute;
+  width: 65%;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#tut-header {
+  margin: auto;
+  padding-top: 10%;
+}
+
+.tut-exp {
+  color: #F5F5F5;
+}
+
+@keyframes anim-glow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .2;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+.glow-square {
+  border-radius: 5px;
+  background: #181818;
+  border: 2px solid #F5F5F5;
+  margin-right: 3px;
+  margin-top: 3px;
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  animation: anim-glow 3s ease infinite;
 }

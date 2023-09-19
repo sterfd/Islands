@@ -2,20 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles.css';
-// import App from './components/App';
 import MainMenu from './components/Menu/MainMenu';
 import About from './components/Menu/About';
-import Rules from './components/Menu/Rules';
+import Tutorial from './components/Menu/Tutorial';
 import Play from './components/Menu/Play';
 import User from './components/Menu/User';
 import Game from './components/Game';
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>
-// );
 
 export default function App() {
   return (
@@ -23,7 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/" index element={<MainMenu />} />
         <Route path="About" element={<About />} />
-        <Route path="Rules" element={<Rules />} />
+        <Route path="Tutorial" element={<Tutorial />} />
         <Route path="Play" element={<Play />} />
         <Route path="User" element={<User />} />
         <Route path='Game' element={<Game />} />

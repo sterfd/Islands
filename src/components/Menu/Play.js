@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Play() {
     return (
         <div className='main-menu'>
+            <h2>Choose a board size:</h2>
             <div className='flexbox'>
                 <Link className='main size' style={{ textDecoration: 'none' }} to='/Game' state={{ size: 5 }}>
                     5

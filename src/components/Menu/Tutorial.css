@@ -1,0 +1,106 @@
+/* TUTORIAL PAGES */
+
+.tut-button-container {
+    position: absolute;
+    top: 90%;
+    right: 10%;
+    transform: translate(-10%, -90%);
+}
+
+.tut-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+}
+
+#tut-header {
+    margin: auto;
+    padding-top: 10%;
+}
+
+.tut-exp {
+    color: #F5F5F5;
+    margin-top: 20px;
+}
+
+@keyframes anim-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 4px transparent;
+    }
+
+    50% {
+        box-shadow: 0 0 4px #F5F5F5;
+    }
+}
+
+.glow {
+    animation: anim-glow 3s ease infinite;
+}
+
+.tut-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tut-board-row {
+    display: flex;
+}
+
+.next-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 20px;
+    color: #F5F5F5;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.fade1 {
+    animation: fadeIn 1.5s;
+}
+
+.fade2 {
+    opacity: 0;
+    animation: fadeIn 1.5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+}
+
+.fade3 {
+    opacity: 0;
+    animation: fadeIn 1.5s;
+    animation-delay: 2s;
+    animation-fill-mode: forwards;
+}
+
+.fadeout {
+    opacity: 1;
+    animation: fadeOut .5s;
+    animation-fill-mode: forwards;
+}

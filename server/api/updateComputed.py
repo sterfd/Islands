@@ -1,12 +1,14 @@
 import sqlite3
-import json
+import os
 
-# make a function to post computed game metrics for all games without CGM already
+current_directory = os.getcwd()
+
+print(current_directory)
 
 
 def update_computed_game_metrics():
     try:
-        sqliteConnection = sqlite3.connect("./api/islands.db")
+        sqliteConnection = sqlite3.connect("./islands.db")
         cursor = sqliteConnection.cursor()
         print("connected!")
         game_ids = []

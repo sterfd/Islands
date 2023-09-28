@@ -34,20 +34,16 @@ def puz_str_to_array(puz, sol):
     return (puzzle_array, solution_array)
 
 
-# with open("puzzles-5.txt", "a") as f:
-#     for _ in range(10):
-#         puzzle, solution = get_puzzle()
-#         parray, sarray = puz_str_to_array(puzzle, solution)
-#         f.write(str(parray) + str(sarray) + "\n")
-
-num = random.randint(8, 6420)
-puzzle, solution = get_puzzle(num)
-print(puzzle)
-print(solution)
-n = int(len(puzzle) ** 0.5)
-parray, sarray = puz_str_to_array(puzzle, solution)
-print(parray)
-print(sarray)
+parray, sarray = [], []
+for _ in range(10):
+    num = random.randint(8, 6420)
+    puzzle, solution = get_puzzle(num)
+    n = int(len(puzzle) ** 0.5)
+    puz, sol = puz_str_to_array(puzzle, solution)
+    parray.append(puz)
+    sarray.append(sol)
+print(len(parray))
+print(len(sarray))
 
 
 def read_db():
@@ -56,11 +52,13 @@ def read_db():
         cursor = sqliteConnection.cursor()
         print("connected!!")
 
-        rand = random.randint(0, 1000000)
-        query = "INSERT INTO Games (id, size, board, solution) VALUES ({0}, {1}, '{2}', '{3}')".format(
-            rand, n, parray, sarray
-        )
-        cursor.execute(query)
+        for idx in range(10):
+            rand = random.randint(0, 1000000)
+            query = "INSERT INTO Games (id, size, board, solution) VALUES ({0}, {1}, '{2}', '{3}')".format(
+                rand, n, parray[idx], sarray[idx]
+            )
+            cursor.execute(query)
+
         sqliteConnection.commit()
         print("successfully inserted!")
         cursor.close()

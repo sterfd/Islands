@@ -56,14 +56,14 @@ def insert_into_db():
             print("connection closed")
 
 
-# puzzle_array, solution_array = [], []
-# for _ in range(10):
-#     puzzle, solution = get_puzzle()
-#     parray, sarray = puz_str_to_array(puzzle, solution)
-#     puzzle_array.append(parray)
-#     solution_array.append(sarray)
+puzzle_array, solution_array = [], []
+for _ in range(10):
+    puzzle, solution = get_puzzle()
+    parray, sarray = puz_str_to_array(puzzle, solution)
+    puzzle_array.append(parray)
+    solution_array.append(sarray)
 
-# insert_into_db()
+insert_into_db()
 
 
 # UPDATE COMPUTED GAME METRICS AFTER SCRAPING

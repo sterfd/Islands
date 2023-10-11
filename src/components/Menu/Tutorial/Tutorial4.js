@@ -72,7 +72,7 @@ export function Tutorial4({ isVisible, toggleIndex }) {
                 navigate('/Play', { replace: true });
             }, 3500);
         }
-    }, [isComplete]);
+    }, [isComplete, navigate]);
 
     return (isVisible === 3) ? (
         <div className='tut-exp'>

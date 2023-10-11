@@ -259,3 +259,65 @@ h2 {
 .rules-container {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
+
+/* USER AUTHENTICATION */
+.log-in-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-tab {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  display: flex;
+  align-items: center;
+}
+
+.user-tab {
+  font-size: 20px;
+  color: #F5F5F5;
+  background-color: #292929;
+  font: "Helvetica Neue", Helvetica, Arial;
+  font-weight: bold;
+  height: 30px;
+  width: 90px;
+  border: none;
+}
+
+.vertical-line {
+  width: 1px;
+  height: 25px;
+  background-color: #F5F5F5;
+  margin: 0 10px;
+}
+
+.user-tab.inactive {
+  opacity: 0.5;
+}
+
+.sign-in-container {
+  padding: 20px;
+}
+
+.user-form {
+  margin-bottom: 10px;
+}
+
+input {
+  background-color: #292929;
+  color: #F5F5F5;
+  font-size: 16px;
+}
+
+.main-button-container {
+  position: absolute;
+  top: 90%;
+  left: 70%;
+  transform: translate(-70%, -90%);
+}

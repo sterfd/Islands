@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles.css';
 import MainMenu from './components/Menu/MainMenu';
 import About from './components/Menu/About';
-import Tutorial from './components/Menu/Tutorial';
+import Tutorial from './components/Menu/Tutorial/Tutorial';
 import Play from './components/Menu/Play';
-import User from './components/Menu/User';
+import User from './components/Menu/UserInfo';
 import Game from './components/Game';
 
 export default function App() {

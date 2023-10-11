@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import './Tutorial.css';
-import _ from 'lodash';
 import { Tutorial2 } from './Tutorial2';
 import { Tutorial3 } from './Tutorial3';
 import { Tutorial4 } from './Tutorial4';

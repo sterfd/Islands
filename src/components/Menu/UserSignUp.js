@@ -15,8 +15,10 @@ export default function SignUp({ isSignUpOpen }) {
         event.preventDefault();
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
-            updateProfile(auth.currentUser, { displayName: newUsername });
+            await updateProfile(userCredential.user, { displayName: newUsername });
             console.log(userCredential);
+            console.log(userCredential.user.uid);
+            console.log(userCredential.user.displayName);
         } catch (error) {
             console.log(error);
         };
@@ -24,10 +26,11 @@ export default function SignUp({ isSignUpOpen }) {
         setNewPassword('');
         setNewUsername('');
     }
+
     return (
         <div>
             <div className='sign-up-container'>
-                <div className='error-messages'></div>
+                <div className='error-messages'>uh oh</div>
                 <form onSubmit={signUp}>
                     <div className='user-form'>
                         <input type='text' placeholder='Display name' value={newUsername} onChange={(event) => setNewUsername(event.target.value)}></input>
@@ -38,7 +41,7 @@ export default function SignUp({ isSignUpOpen }) {
                     <div className='user-form'>
                         <input type='password' placeholder='Password' value={newPassword} onChange={(event) => setNewPassword(event.target.value)}></input>
                     </div>
-                    <button type='submit'>Sign Up</button>
+                    <button type='submit' className='main create'>Create Account</button>
                 </form>
             </div >
         </div >

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onIdTokenChanged, signOut } from 'firebase/auth';
 
 export default function AuthDetails() {
     const [authUser, setAuthUser] = useState(null);
 
     useEffect(() => {
-        const listen = onAuthStateChanged(auth, (user) => {
+        const listen = onIdTokenChanged(auth, (user) => {
             if (user) {
                 setAuthUser(user)
             } else {
@@ -29,10 +29,11 @@ export default function AuthDetails() {
 
     return (
         <div>
-            {authUser ? <><p>{`Signed In as ${authUser.email} with display: ${authUser.displayName}`}</p>
+            {authUser ? <><p>{`Signed In as ${authUser.displayName} with uid: ${authUser.uid}`}</p>
                 <button onClick={userSignOut}>Sign Out</button>
             </>
-                : <>Signed Out</>}
+                : <><p>Signed Out</p>
+                </>}
         </div>
     )
 

@@ -26,14 +26,14 @@ export default function SignIn({ isSignInOpen }) {
     return (
         <div>
             <div className='sign-in-container'>
-                <div className='error-messages'></div>
+                <div className='error-messages'>oh no</div>
                 <form onSubmit={signIn}>
                     <div className='user-form'>
                         <input type='email' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}></input>
                     </div><div className='user-form'>
                         <input type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}></input>
                     </div>
-                    <button type='submit'>Log In</button>
+                    <button type='submit' className='main rule'>Log In</button>
                 </form>
             </div>
         </div>

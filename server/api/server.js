@@ -75,6 +75,8 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
 
 server.post('/user_metrics', (req, res) => {
     // POST user info
+
+    // user columns = user_id (text, NN, pk), display_name, 5_solved, 7_solved, 9_solved
 });
 
 

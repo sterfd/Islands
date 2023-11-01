@@ -1,10 +1,10 @@
 import React from 'react';
-import { Game } from "./Menu/MainMenu";
+import { MainMenu } from "./Menu/MainMenu";
 
 export default function App() {
   return (
     <div className='game'>
-      <Game />
+      <MainMenu />
     </div>
   );
 }

@@ -1,18 +1,8 @@
 class DSU:
-    def __init__(self, board):
-        # self.lands = {
-        #     (r, c): (r, c)
-        #     for r in range(len(board))
-        #     for c in range(len(board))
-        #     if board[r][c] > 0
-        # }
+    def __init__(self):
         self.parents = {}
         self.ranks = {}
 
-    # def find_land(self, node):
-    #     if node not in self.lands:
-    #         self.lands[node] = None
-    #     return self.lands[node]
     def parent_len(self):
         return len(set(self.parents.values()))
 
@@ -42,14 +32,6 @@ class DSU:
             if rank_a == rank_b:
                 rank_b += 1
 
-    # def union_land(self, node_a, node_b):
-    #     parent_a = self.find_land(node_a)
-    #     parent_b = self.find_land(node_b)
-    #     if parent_a:
-    #         self.lands[parent_b] = parent_a
-    #     else:
-    #         self.lands[parent_a] = parent_b
-
 
 def is_water(r, c, board):
     if 0 <= r < len(board) and 0 <= c < len(board) and board[r][c] == 0:
@@ -68,7 +50,7 @@ def is_land(r, c, board):
 
 
 def valid_solution(board):
-    board_connection = DSU(board)
+    board_connection = DSU()
     dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     lands_checked = set()
     for r, row in enumerate(board):
@@ -119,3 +101,22 @@ def valid_solution(board):
                 print("not valid: there is an area of water that is too big")
                 return False
     return True
+
+
+# testBoard = [[-2, -2, -2, -2, -2],
+#     [-2, -2, -2, 1, -2],
+#     [3, -2, -2, -2, 5],
+#     [-2, 1, -2, -2, -2],
+#     [-2, -2, -2, -2, -2]]
+
+testSolution = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, -1, 2, 0, -1, -1, 3],
+    [0, 0, 0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 3, 0],
+    [0, 0, 0, 2, 0, -1, 0],
+    [2, -1, 0, -1, 0, -1, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+]
+
+print(valid_solution(testSolution))

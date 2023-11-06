@@ -45,7 +45,7 @@ class BoardState:
         self.total_land = self.count_lands(board)
         self.land_count = len(self.remaining_islands)
         self.history = [copy.deepcopy(board)]
-        self.check_diagonals()
+        self.check_diagonal_numbers()
         self.empty_distances()
         lands = list(self.land)
         for r, c in lands:
@@ -63,6 +63,43 @@ class BoardState:
     # valid if it is empty and not connected to other island
     # and if not blocing other island
     #
+
+    """
+    26
+    self.land
+    {(0, 2): [(0, 3)], 
+        (0, 3): [(0, 2)],       remaining 6
+
+        (1, 1): [],         done 1
+
+        (2, 4): [],             remaining 2
+
+        (3, 2): [(4, 2)],   done 2
+        (4, 2): [(3, 2)], 
+
+        (4, 5): [(5, 5)],       remaining 4
+        (5, 5): [(4, 5)],
+
+        (6, 4): [(6, 3)],       remaining 8
+        (6, 3): [(6, 4)], 
+
+        (3, 0): [(4, 0)],       uncharted
+        (4, 0): [(3, 0), (5, 0)], 
+        (5, 0): [(4, 0)]}
+
+    self.remaining_islands
+    {(0, 2): {(0, 2), (0, 3)},      6
+    (2, 4): [(2, 4)],               2
+    (5, 5): {(4, 5), (5, 5)},       4
+    (6, 4): {(6, 3), (6, 4)}}       8
+    """
+    # right now the problem is when two isalnd fragments aren't connected, we assume any
+    # island that isn't directly connected to target is something we cannot get in proximity of
+    # this results in premature blocking of routes for floating islands
+
+    def remaining_land_expansion(self, r, c):
+        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        remaining_area = self.history[0][r][c] - len(self.remaining_islands[(r, c)])
 
     def calculate_distance(self, r, c, ir, ic):
         dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
@@ -90,9 +127,9 @@ class BoardState:
         dia = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
         if not self.is_empty(r, c) or (r, c) in visited:
             return False
-        for dr, dc in dir:
-            if self.is_land(r + dr, c + dc) and (r + dr, c + dc) not in visited:
-                return False
+        # for dr, dc in dir:
+        #     if self.is_land(r + dr, c + dc) and (r + dr, c + dc) not in visited:
+        #         return False
         # for dr, dc in dia:
         #     if is_land(r+dr, c+dc) and (r+dr, c+dc) not in visited:
         #         # check if - this is in remaining
@@ -105,13 +142,11 @@ class BoardState:
             close_islands = []
             for ir, ic in self.remaining_islands:
                 distance_to_cell = self.calculate_distance(r, c, ir, ic)
-                # distance_to_cell = abs(ir - r) + abs(ic - c)
                 if distance_to_cell < self.history[0][ir][ic]:
                     close_islands.append((distance_to_cell, ir, ic))
                 if len(close_islands) > 1:
                     continue
             if not close_islands:
-                print(r, c, "has no close islands")
                 self.add_water(r, c)
 
     def check_complete(self):
@@ -137,7 +172,7 @@ class BoardState:
                     land += cell
         return land
 
-    def check_diagonals(self):
+    def check_diagonal_numbers(self):
         dia = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
         two = [(2, 0), (-2, 0), (0, 2), (0, -2)]
         remaining = list(self.remaining_islands)
@@ -315,6 +350,8 @@ class BoardState:
                     self.add_water(er, ec)
                 if (r, c) in self.remaining_islands:
                     self.remaining_islands.pop((r, c))
+                # check for empties again
+                self.empty_distances()
         if len(surr_empties) == 1:
             for r, c in surr_empties:
                 self.add_land(r, c)

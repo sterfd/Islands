@@ -1,258 +1,343 @@
 import copy
 import random
 
-testBoard = [
-    [-2, -2, 6, -2, -2, -2, -2],
-    [-2, 1, -2, -2, -2, -2, -2],
-    [-2, -2, -2, -2, 2, -2, -2],
-    [-2, -2, -2, -2, -2, -2, -2],
-    [-2, -2, 2, -2, -2, -2, -2],
-    [-2, -2, -2, -2, -2, 4, -2],
-    [-2, -2, -2, -2, 8, -2, -2],
-]
 
+class DSU:
+    def __init__(self):
+        self.parents = {}
+        self.size = {}
 
-# solving strat to implement - need to somehow keep looping over lonely island/water
-# need update to empty distancees, since distance later is a result of available path
-# for numbered islands - see if adding one somewhere blocks another island, tells us this is water
+    def find(self, node):
+        if node not in self.parents:
+            self.parents[node] = node
+            self.size[node] = 1
+        if self.parents[node] != node:
+            self.parents[node] = self.find(self.parents[node])
+        return self.parents[node]
+
+    def get_size(self, node):
+        parent = self.find(node)
+        return self.size[parent]
+
+    def union(self, node_a, node_b):
+        parent_a = self.find(node_a)
+        parent_b = self.find(node_b)
+        if parent_a != parent_b:
+            self.parents[parent_b] = parent_a
+            self.size[parent_a] += self.size[parent_b]
 
 
 class BoardState:
     def __init__(self, board):
-        self.complete = False
         self.size = len(board)
-        self.remaining_islands = {
-            (r, c): [(r, c)]
-            for r in range(self.size)
-            for c in range(self.size)
-            if board[r][c] > 0
-        }
-        self.land = {
-            (r, c): []
-            for r in range(self.size)
-            for c in range(self.size)
-            if board[r][c] > 0
-        }
-        self.water = {}
+        self.solved = False
         self.empty = set(
             [
                 (r, c)
                 for r in range(self.size)
                 for c in range(self.size)
-                if board[r][c] == -2
+                if board[r][c] < 0
             ]
         )
-        self.total_land = self.count_lands(board)
-        self.land_count = len(self.remaining_islands)
+        self.remaining_islands = set(
+            [
+                (r, c)
+                for r in range(self.size)
+                for c in range(self.size)
+                if board[r][c] > 0
+            ]
+        )
+        self.water_DSU = DSU()
+        self.land_DSU = DSU()
+        for r, c in self.remaining_islands:
+            self.land_DSU.find((r, c))
+        self.total_land = sum([board[r][c] for (r, c) in self.remaining_islands])
         self.history = [copy.deepcopy(board)]
-        self.check_diagonal_numbers()
-        self.empty_distances()
-        lands = list(self.land)
-        for r, c in lands:
-            self.check_island(r, c)
-        self.empty_distances()
+        self.dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        self.dia = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
+        self.twos = [(2, 0), (0, 2), (-2, 0), (0, -2)]
 
-    # distance from island to cell is closest valid path to cell
-    # what is valid - does not connect to other islands
-    #           does not block other islands
-    #           only over empties
-    #           within area limit
+        # GAME START
+        # for each island, check diagonal and two away, completed
+        for r, c in copy.deepcopy(self.remaining_islands):
+            self.is_completed_island(r, c)
+            self.too_close(r, c)
+        for r, c in list(self.empty):
+            if not self.close_islands(r, c):
+                print(len(self.history), r, c, "no islands nearby")
+                self.add_square(r, c, "water")
+        # for each empty, check if close to island
+        for r, c in list(self.remaining_islands):
+            available = self.incomplete_blocked_island(r, c)
+            print(len(self.history), "checking avail", r, c, available)
+            if len(available) == self.history[0][r][c] - self.land_DSU.get_size((r, c)):
+                for ar, ac in available:
+                    self.add_square(ar, ac, "land")
 
-    # bfs - queue with all island blocks - we have area - len(island) moves to get to hte cell
-    # for directions from each coord - we can add it to queue if not checked, and valid
-    # valid if it is empty and not connected to other island
-    # and if not blocing other island
-    #
+    # game start - check diagonals, two aways, completed islands, empty space prox to islands
 
-    """
-    26
-    self.land
-    {(0, 2): [(0, 3)], 
-        (0, 3): [(0, 2)],       remaining 6
+    # USE TO PLACE SQUARES
+    def check_land(self, r, c):
+        # connect island to surrounding and identify which numbered island this belongs to before continuing with rest
+        self.find_parent_island(r, c)
+        self.is_completed_island(r, c)
+        self.too_close(r, c)
+        surr = self.adj_empties(r, c)
+        if len(surr) == 1:
+            print(len(self.history), r, c, "no way out for land")
+            self.add_square(surr[0][0], surr[0][1], "land")
+        # check for completed island, diagonal/2s, isolated land, isolated neighbouring water,
 
-        (1, 1): [],         done 1
+    def check_water(self, r, c):
+        self.water_DSU.find((r, c))
+        for dr, dc in self.dir:
+            if self.is_water(r + dr, c + dc):
+                self.water_DSU.union((r, c), (r + dr, c + dc))
+                self.big_water_block(r, c)
+            if (
+                self.is_land(r + dr, c + dc)
+                and self.land_DSU.find((r + dr, c + dc)) in self.remaining_islands
+            ):
+                self.check_land(r + dr, c + dc)
+            if (r + dr, c + dc) in self.empty:
+                self.isolated_empty(r + dr, c + dc)
+        surr = self.adj_empties(r, c)
+        if len(surr) == 1:
+            print(len(self.history), r, c, "no way out for water")
+            self.add_square(surr[0][0], surr[0][1], "water")
+        # check for isolated water, isolated adj land,  2x2, isolated empties,
 
-        (2, 4): [],             remaining 2
+    def add_square(self, r, c, square_type):
+        if (r, c) not in self.empty:
+            return
+        self.empty.remove((r, c))
+        next_move = copy.deepcopy(self.history[-1])
+        next_move[r][c] = 0 if square_type == "water" else -1
+        self.history.append(next_move)
+        self.check_complete()
+        if self.solved:
+            return
+        if square_type == "water":
+            self.check_water(r, c)
+        else:
+            self.check_land(r, c)
 
-        (3, 2): [(4, 2)],   done 2
-        (4, 2): [(3, 2)], 
+    # CHECKS DONE WHILE PLACING SQUARES
+    # check completed - this is done by seeing if remaining land count == empty (rest is land), or total land == land count (rest is water)
+    def check_complete(self):
+        if len(self.land_DSU.parents) == self.total_land:
+            # rest is water
+            self.solved = True
+            print("game is finished, rest is water")
+            for er, ec in list(self.empty):
+                self.add_square(er, ec, "water")
 
-        (4, 5): [(5, 5)],       remaining 4
-        (5, 5): [(4, 5)],
+        if len(self.water_DSU.parents) == self.size**2 - self.total_land:
+            # rest is land
+            self.solved = True
+            print(len(self.history), "game is finished, rest is land")
+            print(self.empty)
+            for er, ec in list(self.empty):
+                print("adding last lands", er, ec)
+                self.add_square(er, ec, "land")
 
-        (6, 4): [(6, 3)],       remaining 8
-        (6, 3): [(6, 4)], 
+    # need to do something when island is completed, maybe do another empty check or island check for random lands
+    def is_completed_island(self, r, c):
+        parent = self.land_DSU.find((r, c))
+        pr, pc = parent
+        if parent not in self.remaining_islands:
+            return
+        if self.history[0][pr][pc] == self.land_DSU.get_size(parent):
+            print(len(self.history), r, c, "completed island")
+            self.remaining_islands.remove((pr, pc))
+            surr = self.adj_empties(r, c)
+            for sr, sc in surr:
+                self.add_square(sr, sc, "water")
 
-        (3, 0): [(4, 0)],       uncharted
-        (4, 0): [(3, 0), (5, 0)], 
-        (5, 0): [(4, 0)]}
+    def adj_empties(self, r, c):
+        connected = self.return_connected(r, c)
+        adj_empty = set()
+        for qr, qc in connected:
+            for dr, dc in self.dir:
+                if (qr + dr, qc + dc) in self.empty:
+                    adj_empty.add((qr + dr, qc + dc))
+        return list(adj_empty)
 
-    self.remaining_islands
-    {(0, 2): {(0, 2), (0, 3)},      6
-    (2, 4): [(2, 4)],               2
-    (5, 5): {(4, 5), (5, 5)},       4
-    (6, 4): {(6, 3), (6, 4)}}       8
-    """
-    # right now the problem is when two isalnd fragments aren't connected, we assume any
-    # island that isn't directly connected to target is something we cannot get in proximity of
-    # this results in premature blocking of routes for floating islands
+    # def isolated empty - check if empty is completed surrounded by water, - becomes water
+    def isolated_empty(self, r, c):
+        water = land = 0
+        for dr, dc in self.dir:
+            if (r + dr, c + dc) in self.empty:
+                return
+            if self.is_water(r + dr, c + dc):
+                water += 1
+            elif self.is_land(r + dr, c + dc):
+                land += 1
+        if not water:
+            print(len(self.history), r, c, "empty square isolated by land")
+            self.add_square(r, c, "land")
+        if not land:
+            print(len(self.history), r, c, "empty square isolated by water")
+            self.add_square(r, c, "water")
 
-    def remaining_land_expansion(self, r, c):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        remaining_area = self.history[0][r][c] - len(self.remaining_islands[(r, c)])
+    # need to do this check for land as well - cannot have an isolated water filling empty sapce
 
-    def calculate_distance(self, r, c, ir, ic):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        checked = set(self.remaining_islands[(ir, ic)])
-        queue = list(checked)
-        distance, remaining_area = 0, self.history[0][ir][ic] - len(checked)
+    # def big water - check if 2x2
+    def big_water_block(self, r, c):
+        # check the 4 2x2 blocks containing r,c
+        for dr, dc in self.dia:
+            empty = []
+            if (
+                self.is_land(r, c + dc)
+                or self.is_land(r + dr, c)
+                or self.is_land(r + dr, c + dc)
+            ):
+                continue
+            if not (
+                self.is_valid(r, c + dc)
+                and self.is_valid(r + dr, c)
+                and self.is_valid(r + dr, c + dc)
+            ):
+                continue
+            if (r, c + dc) in self.empty:
+                empty.append((r, dc + c))
+            if (r + dr, c + dc) in self.empty:
+                empty.append((r + dr, dc + c))
+            if (r + dr, c) in self.empty:
+                empty.append((r + dr, c))
+            if len(empty) == 1:
+                print(len(self.history), "big water at", r, c, empty)
+                self.add_square(empty[0][0], empty[0][1], "land")
+
+            # if self.is_water(r + dr, c + dc):
+            #     if self.is_water(r, c + dc):
+            #         print(len(self.history), r + dr, c, "2x2 blcok of water")
+            #         self.add_square(r + dr, c, "land")
+            #     if self.is_water(r + dr, c):
+            #         print(len(self.history), r, c + dc, "2x2 blcok of water")
+            #         self.add_square(r, c + dc, "land")
+
+    # def too close - check diagonals and two aways for disjoint island
+    def too_close(self, r, c):
+        if self.solved:
+            return
+        rc_parent = self.land_DSU.find((r, c))
+        for dr, dc in self.dia:
+            if (
+                self.is_land(r + dr, c + dc)
+                and self.land_DSU.find((r + dr, c + dc)) != rc_parent
+            ):
+                print(len(self.history), r, c, "diagonal lands")
+                self.add_square(r, c + dc, "water")
+                self.add_square(r + dr, c, "water")
+        for dr, dc in self.twos:
+            if (
+                self.is_land(r + dr, c + dc)
+                and self.land_DSU.find((r + dr, c + dc)) != rc_parent
+            ):
+                print(len(self.history), r, c, "lands two away")
+                self.add_square(r + dr // 2, c + dc // 2, "water")
+
+    # find_possible island
+    def find_parent_island(self, r, c):
+        for dr, dc in self.dir:
+            if self.is_land(dr + r, dc + c):
+                self.land_DSU.union((dr + r, dc + c), (r, c))
+            if (dr + r, dc + c) in self.empty:
+                self.isolated_empty(dr + r, dc + c)
+            # if self.is_water(dr + r, dc + c):
+            #     surr = self.adj_empties(dr + r, dc + c)
+            #     if len(surr) == 1:
+            #         print(len(self.history), r, c, "no way out for water")
+            #         self.add_square(surr[0][0], surr[0][1], "water")
+        parent = self.land_DSU.find((r, c))
+        if parent in self.remaining_islands:
+            return
+        poss_parents = self.close_islands(r, c)
+        if not poss_parents:
+            print("something is wrong here. there is no close island to", r, c)
+        elif len(poss_parents) == 1:
+            print("found a far parent for", r, c, poss_parents)
+            pr, pc = poss_parents[0]
+            self.land_DSU.union((pr, pc), (r, c))
+            self.find_island_paths(pr, pc, r, c)
+        else:
+            print("there are many poss for this island at", r, c, poss_parents)
+
+    # should be finding possible paths to this parent
+    #    how many paths, what is common amongst ALL paths, what cannot be in aANY path
+
+    def find_island_paths(self, pr, pc, r, c):
+        paths = []
+        parent_land = self.return_connected(pr, pc)
+        isolated = self.return_connected(r, c)
+        dead_end = set()
+        remaining = self.history[0][pr][pc] - len(parent_land) - len(isolated)
+
+        # bfs to explore paths from parent to isolated
+        # if a path ends before reaching isoalted, put coords into dead end set
+        # if we reach isolated, add to paths
+        # if all paths are RA long - then we add land to squares that are in all of those paths
+        #       if any dead end coords do not show up in any path - we cant do anything yet, these just not island
+
+    # for 2s - with 2 possible paths beside each other, there must be a water at the corner
+
+    # need to do something similar for incomplete islands - explore what space is available to it - fill if its perfect
+    def incomplete_blocked_island(self, r, c):
+        queue = self.return_connected(r, c)
+        checked = set(queue)
+        available = set()
         while queue:
-            if distance > remaining_area:
-                return self.history[0][ir][ic]
             new_queue = []
             for qr, qc in queue:
-                if qr == r and qc == c:
-                    return distance
-                for dr, dc in dir:
-                    if self.valid_path(dr + qr, dc + qc, checked):
+                for dr, dc in self.dir:
+                    if (qr + dr, qc + dc) in checked:
+                        continue
+                    checked.add((dr + qr, dc + qc))
+                    if self.valid_path(r, c, r, c, dr + qr, dc + qc):
                         new_queue.append((dr + qr, dc + qc))
-                        checked.add((dr + qr, dc + qc))
-
             queue = new_queue
-            distance += 1
-        return self.history[0][ir][ic]
+            available.update(queue)
+        return available
 
-    def valid_path(self, r, c, visited):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        dia = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
-        if not self.is_empty(r, c) or (r, c) in visited:
-            return False
-        # for dr, dc in dir:
-        #     if self.is_land(r + dr, c + dc) and (r + dr, c + dc) not in visited:
-        #         return False
-        # for dr, dc in dia:
-        #     if is_land(r+dr, c+dc) and (r+dr, c+dc) not in visited:
-        #         # check if - this is in remaining
-        #         #   surr empties is just these diagonals -
-        return True
-
-    def empty_distances(self):
-        current_empties = list(self.empty)
-        for r, c in current_empties:
-            close_islands = []
-            for ir, ic in self.remaining_islands:
-                distance_to_cell = self.calculate_distance(r, c, ir, ic)
-                if distance_to_cell < self.history[0][ir][ic]:
-                    close_islands.append((distance_to_cell, ir, ic))
-                if len(close_islands) > 1:
-                    continue
-            if not close_islands:
-                self.add_water(r, c)
-
-    def check_complete(self):
-        # check if rest should be water or rest should be land
-        if self.land_count == self.total_land:
-            self.complete = True
-            last_cells = list(self.empty)
-            for r, c in last_cells:
-                self.add_water(r, c)
-            return
-        if len(self.empty) == (self.total_land - self.land_count):
-            self.complete = True
-            last_cells = list(self.empty)
-            for r, c in last_cells:
-                self.add_land(r, c)
-            return
-
-    def count_lands(self, board):
-        land = 0
-        for row in board:
-            for cell in row:
-                if cell > 0:
-                    land += cell
-        return land
-
-    def check_diagonal_numbers(self):
-        dia = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
-        two = [(2, 0), (-2, 0), (0, 2), (0, -2)]
-        remaining = list(self.remaining_islands)
-        for r, c in remaining:
-            for dr, dc in dia:
-                if self.is_land(r + dr, c + dc):
-                    self.add_water(r, c + dc)
-                    self.add_water(r + dr, c)
-            for dr, dc in two:
-                if self.is_land(r + dr, c + dc):
-                    self.add_water(r + dr // 2, c + dc // 2)
-
-    def add_water(self, r, c):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        if (r, c) not in self.empty:
-            return
-        self.empty.remove((r, c))
-        current_move = copy.deepcopy(self.history[-1])
-        current_move[r][c] = 0
-        self.history.append(current_move)
-        self.water[(r, c)] = []
-        self.check_complete()
-        if self.complete:
-            return
-        # check if water is connected to others, updated adj list
-        for dr, dc in dir:
-            if self.is_water(r + dr, c + dc):
-                self.water[(r, c)].append((r + dr, c + dc))
-                self.water[(r + dr, c + dc)].append((r, c))
-            if self.is_land(r + dr, c + dc):
-                self.check_island(r + dr, c + dc)
-        if self.water[(r, c)]:  # if adjacent water, check 2x2
-            self.check_big_water(r, c)
-        # check lonely - if yes, add water
-        self.check_lonely_water(r, c)
-        # check surrounded empties (adj) - surrounded by 4 waters
-        for dr, dc in dir:
-            if self.is_empty(r + dr, c + dc):
-                self.check_surr_empty(r + dr, c + dc)
-
-    def add_land(self, r, c):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        if (r, c) not in self.empty:
-            return
-        self.empty.remove((r, c))
-        current_move = copy.deepcopy(self.history[-1])
-        current_move[r][c] = -1
-        self.history.append(current_move)
-        self.land_count += 1
-        self.land[(r, c)] = []
-        for dr, dc in dir:
-            if self.is_land(r + dr, c + dc):
-                self.land[(r, c)].append((r + dr, c + dc))
-                self.land[(r + dr, c + dc)].append((r, c))
-        self.check_island(r, c)
-        self.check_straight_line(r, c)
-        self.check_complete()
-        if self.complete:
-            return
-
-    def check_straight_line(self, r, c):
+    # for each empty, check if path possible islands - if not, water
+    def close_islands(self, r, c):
         close_islands = []
         for ir, ic in self.remaining_islands:
-            distance_to_cell = abs(ir - r) + abs(ic - c)
-            if distance_to_cell < self.history[0][ir][ic]:
-                close_islands.append((distance_to_cell, ir, ic))
-            if len(close_islands) > 1:
-                continue
-        if len(close_islands) == 1:
-            distance, ir, ic = close_islands[0]
-            if distance + 1 == self.history[0][ir][ic] and (r == ir or c == ic):
-                for row in range(min(r, ir), max(r, ir) + 1):
-                    for col in range(min(c, ic), max(c, ic) + 1):
-                        self.add_land(row, col)
+            # if rc is island and area of this and ir,ic exceeds that nubmer, skip
+            if self.is_land(r, c):
+                sizes = self.land_DSU.get_size((r, c)) + self.land_DSU.get_size(
+                    (ir, ic)
+                )
+                if sizes >= self.history[0][ir][ic]:
+                    continue
+            queue = self.return_connected(ir, ic)
+            checked = set(queue)
+            remaining_area = self.history[0][ir][ic] - len(queue)
+            while queue and remaining_area >= 0:
+                if remaining_area == 0 and (r, c) not in queue:
+                    break
+                new_queue = []
+                for qr, qc in queue:
+                    for dr, dc in self.dir:
+                        if (qr + dr, qc + dc) in checked:
+                            continue
+                        if qr + dr == r and qc + dc == c:
+                            close_islands.append((ir, ic))
+                            break
+                        if self.valid_path(ir, ic, r, c, qr + dr, qc + dc):
+                            new_queue.append((qr + dr, qc + dc))
+                        checked.add((qr + dr, qc + dc))
+                queue = new_queue
+                remaining_area -= 1
+        return close_islands
 
-    def is_water(self, r, c):
-        if 0 <= r < self.size and 0 <= c < self.size and self.history[-1][r][c] == 0:
-            return True
-        return False
+        # find distance to this block
+        # if close enough, add to close islands
 
+        # return number of close islands
+
+    # HELPER FUNCTIONS
     def is_valid(self, r, c):
         if 0 <= r < self.size and 0 <= c < self.size:
             return True
@@ -262,102 +347,59 @@ class BoardState:
         if (
             0 <= r < self.size
             and 0 <= c < self.size
-            and (self.history[-1][r][c] == -1 or self.history[-1][r][c] > 0)
+            and (self.history[-1][r][c] > 0 or self.history[-1][r][c] == -1)
         ):
             return True
         return False
 
-    def is_empty(self, r, c):
-        if 0 <= r < self.size and 0 <= c < self.size and self.history[-1][r][c] == -2:
+    def is_water(self, r, c):
+        if 0 <= r < self.size and 0 <= c < self.size and (self.history[-1][r][c] == 0):
             return True
         return False
 
-    def check_big_water(self, r, c):
-        dir = [(1, 1), (-1, -1), (-1, 1), (1, -1)]
-        for dr, dc in dir:
-            if self.is_valid(dr + r, dc + c):
-                not_water = []
-                if not self.is_water(dr + r, dc + c):
-                    not_water.append((dr + r, dc + c))
-                if not self.is_water(r, dc + c):
-                    not_water.append((r, dc + c))
-                if not self.is_water(dr + r, c):
-                    not_water.append((dr + r, c))
-                if len(not_water) == 1:
-                    self.add_land(not_water[0][0], not_water[0][1])
-
-    def check_lonely_water(self, r, c):
-        self.check_complete()
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        checked_water = set([(r, c)])
-        adj_empty = set()
+    def return_connected(self, r, c):
+        connected = [(r, c)]
         queue = [(r, c)]
+        checked = set(connected)
         while queue:
             new_queue = []
-            for r, c in queue:
-                for ar, ac in self.water[(r, c)]:
-                    if (ar, ac) not in checked_water:
-                        new_queue.append((ar, ac))
-                        checked_water.add((ar, ac))
-                for dr, dc in dir:
-                    if self.is_empty(r + dr, c + dc):
-                        adj_empty.add((r + dr, c + dc))
-                        if len(adj_empty) > 1:
-                            return
+            for ir, ic in queue:
+                for dr, dc in self.dir:
+                    if (ir + dr, ic + dc) in checked:
+                        continue
+                    if self.is_land(r, c) and self.is_land(ir + dr, ic + dc):
+                        new_queue.append((ir + dr, ic + dc))
+                    elif self.is_water(r, c) and self.is_water(ir + dr, ic + dc):
+                        new_queue.append((ir + dr, ic + dc))
+                    checked.add((ir + dr, ic + dc))
             queue = new_queue
-        if len(adj_empty) == 1:
-            empties = list(adj_empty)
-            for r, c in empties:
-                self.add_water(r, c)
+            connected += queue
+        return connected
 
-    def check_surr_empty(self, r, c):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        waters = 0
-        surr = 0
-        for dr, dc in dir:
-            if self.is_valid(r + dr, c + dc):
-                surr += 1
-            if self.is_water(r + dr, c + dc):
-                waters += 1
-        if waters == surr:
-            self.add_water(r, c)
+    def valid_path(self, ir, ic, lr, lc, r, c):
+        if (r, c) not in self.empty:
+            return False
+        island_parent = self.land_DSU.find((ir, ic))
+        orig_parent = (self.size, self.size)
+        if (lr, lc) in self.land_DSU.parents:
+            orig_parent = self.land_DSU.find((lr, lc))
+        for dr, dc in self.dir:
+            if self.is_land(r + dr, c + dc):
+                obs_parent = self.land_DSU.find((r + dr, c + dc))
+                if obs_parent != island_parent and obs_parent != orig_parent:
+                    return False
+        for dr, dc in self.dia:
+            if self.is_land(r + dr, c + dc):
+                surr = self.adj_empties(r + dr, c + dc)
+                if len(surr) == 2 and (r + dr, c) in surr and (r, c + dc) in surr:
+                    return False
 
-    def check_island(self, r, c):
-        dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-        self.check_straight_line(r, c)
-        target = (r, c) if (r, c) in self.remaining_islands else None
-        surr_empties = set()
-        checked = set([(r, c)])
-        queue = [(r, c)]
-        while queue:
-            new_queue = []
-            for r, c in queue:
-                for ar, ac in self.land[(r, c)]:
-                    if (ar, ac) not in checked:
-                        checked.add((ar, ac))
-                        new_queue.append((ar, ac))
-                        if (ar, ac) in self.remaining_islands:
-                            target = (ar, ac)
-                for dr, dc in dir:
-                    if self.is_empty(r + dr, c + dc):
-                        surr_empties.add((r + dr, c + dc))
-            queue = new_queue
-        if target:
-            r, c = target
-            self.remaining_islands[(r, c)] = checked
-            if len(self.remaining_islands[(r, c)]) == self.history[-1][r][c]:
-                for er, ec in surr_empties:
-                    self.add_water(er, ec)
-                if (r, c) in self.remaining_islands:
-                    self.remaining_islands.pop((r, c))
-                # check for empties again
-                self.empty_distances()
-        if len(surr_empties) == 1:
-            for r, c in surr_empties:
-                self.add_land(r, c)
+        return True
+
+        # check diagonal blocking too
 
 
-class DSU:
+class validDSU:
     def __init__(self):
         self.parents = {}
         self.ranks = {}
@@ -392,24 +434,22 @@ class DSU:
                 rank_b += 1
 
 
-def is_water(r, c, board):
-    if 0 <= r < len(board) and 0 <= c < len(board) and board[r][c] == 0:
-        return True
-    return False
-
-
-def is_land(r, c, board):
-    if (
-        0 <= r < len(board)
-        and 0 <= c < len(board)
-        and (board[r][c] == -1 or board[r][c] > 0)
-    ):
-        return True
-    return False
-
-
 def valid_solution(board):
-    board_connection = DSU()
+    def is_water(r, c, board):
+        if 0 <= r < len(board) and 0 <= c < len(board) and board[r][c] == 0:
+            return True
+        return False
+
+    def is_land(r, c, board):
+        if (
+            0 <= r < len(board)
+            and 0 <= c < len(board)
+            and (board[r][c] == -1 or board[r][c] > 0)
+        ):
+            return True
+        return False
+
+    board_connection = validDSU()
     dir = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     lands_checked = set()
     for r, row in enumerate(board):
@@ -443,6 +483,7 @@ def valid_solution(board):
                     queue = new_queue
                 if area != cell:
                     print("not valid: island area not correct at", r, c)
+                    return False
     for r, c in board_connection.parents:
         board_connection.find_water((r, c))
     if board_connection.parent_len() != 1:
@@ -483,6 +524,15 @@ def valid_solution(board):
 #             sqliteConnection.close()
 #             print("connection closed")
 
+testBoard = [
+    [-2, -2, -2, -2, -2, 5, -2],
+    [-2, 1, -2, -2, -2, -2, -2],
+    [-2, -2, 3, -2, -2, -2, -2],
+    [-2, -2, -2, -2, -2, -2, -2],
+    [-2, -2, 2, -2, -2, -2, -2],
+    [-2, 4, -2, -2, -2, -2, -2],
+    [-2, -2, -2, -2, -2, 3, -2],
+]
 
 game = BoardState(testBoard)
 # for num, move in enumerate(game.history):
@@ -494,6 +544,12 @@ print(game.history, "\n", len(game.history), "moves made")
 
 if valid_solution(game.history[-1]):
     print("the game has been solved: board", testBoard, "\n", game.history[-1])
-    print(random.randint(0, 1000000))
+    id = random.randint(0, 1000000)
+    print("sql query")
+    query = 'INSERT INTO Games (id, size, board, solution) VALUES ({0}, {1}, "{2}", "{3}")'.format(
+        id, game.size, game.history[0], game.history[-1]
+    )
+    print(query)
+
     # insert_into_db()
 # print("solution:", game.history[-1])

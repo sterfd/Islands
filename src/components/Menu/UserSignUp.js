@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import axios from 'axios';
 
 export default function SignUp({ isSignUpOpen }) {
     const [newEmail, setNewEmail] = useState('');
@@ -19,6 +20,14 @@ export default function SignUp({ isSignUpOpen }) {
             console.log(userCredential);
             console.log(userCredential.user.uid);
             console.log(userCredential.user.displayName);
+            const postData = { "user_id": userCredential.user.uid, "display_name": userCredential.user.displayName }
+            axios.post('http://localhost:8888/users', postData)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         } catch (error) {
             console.log(error);
         };
@@ -27,9 +36,11 @@ export default function SignUp({ isSignUpOpen }) {
         setNewUsername('');
     }
 
+    // new async function to post new user to sql database
+
     return (
         <div>
-            <div className='sign-up-container'>
+            <div className='sign-in-container'>
                 <div className='error-messages'>uh oh</div>
                 <form onSubmit={signUp}>
                     <div className='user-form'>

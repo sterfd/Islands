@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
 import _ from 'lodash'; // deep copying arrays
 import { Board } from './Board';
@@ -10,6 +11,9 @@ import { GameMenu } from './GameMenu';
 import { Rules } from './Rules';
 
 export default function Game() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const [authUser, setAuthUser] = useState(null);
     const [puzzleID, setPuzzleID] = useState(0)
     const [startingBoard, setStartingBoard] = useState([]);
     const [solutionBoard, setSolutionBoard] = useState([]);
@@ -41,7 +45,7 @@ export default function Game() {
         if (squaresString === solutionString && seconds !== 0) {
             setIsComplete(true);
             setTimerRunning(false);
-            PostGame(puzzleID, seconds);
+            PostGame(puzzleID, authUser, seconds);
         } else {
             setIsComplete(false);
         }
@@ -86,6 +90,11 @@ export default function Game() {
 
     useEffect(() => {
         getNewGame();
+        if (user) {
+            setAuthUser(user.uid);
+        } else {
+            setAuthUser(null);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AuthDetails from './AuthDetails';
 import SignIn from './UserSignIn';
 import SignUp from './UserSignUp'
+// import { escape } from 'lodash';
 
 export default function User() {
     const [logInOpen, setLogInOpen] = useState(true);
@@ -20,6 +21,9 @@ export default function User() {
             signUpTab.classList.remove('inactive');
         }
     }
+
+    // if signed in - show number of games solved of each type, maybe cute tiles of solved puzzles with times
+    // if signed out - show log in or sign up page
 
     return (
         <div className='log-in-page'>

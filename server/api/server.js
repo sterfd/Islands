@@ -73,10 +73,37 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
     }
 });
 
-server.post('/user_metrics', (req, res) => {
+server.post('/users', async (req, res) => {
     // POST user info
+    // new user, add user_id, display_name
+    const postData = req.body;
+    try {
+        const metrics = await db('users').insert(postData);
+        res.status(201).json(postData);
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating new user', error: err });
+    }
+    // user columns = user_id (text, NN, pk), display_name
+});
 
-    // user columns = user_id (text, NN, pk), display_name, 5_solved, 7_solved, 9_solved
+
+server.get('/users/:id', async (req, res) => {
+    // GET user info
+    try {
+        const display = await db.select('*').where({ user_id: req.params.id }).from('users');
+        res.status(200).json(display);
+        console.log('from server,', display)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Error getting display name' });
+    }
+    // try {
+    //     const metrics = await db.select('*').where({ id: req.params.id }).from('game_metrics');
+    //     res.status(200).json(metrics);
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).json({ message: 'Error getting metrics.' })
+    // }
 });
 
 

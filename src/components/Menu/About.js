@@ -18,15 +18,17 @@ export default function About() {
             console.log(authUser)
             const response = await axios.get('http://localhost:8888/users/' + authUser);
             if (response) {
-                console.log('response', response.data[0]);
-                const { uid, dp } = response.data[0];
+                console.log('response', response.data);
+                // const { uid, dp } = response.data[0];
             }
         } catch (error) {
             console.log(error);
         }
     }
+    useEffect(() => {
+        getUser();
+    }, []);
 
-    getUser();
     return (
         <div className='sub-menu'>
             <p>This game is based on Nurikabe by the publisher Nikoli!</p>

@@ -5,29 +5,54 @@ import { getAuth } from 'firebase/auth';
 
 
 export default function About() {
-    async function getUser() {
-        try {
-            const auth = getAuth()
-            const user = auth.currentUser;
-            let authUser;
-            if (user) {
-                authUser = user.uid;
-            } else {
-                authUser = null;
-            }
-            console.log(authUser)
-            const response = await axios.get('http://localhost:8888/users/' + authUser);
-            if (response) {
-                console.log('response', response.data);
-                // const { uid, dp } = response.data[0];
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const [gameData, setGameData] = useState([]);
+    const [userStats, setUserStats] = useState({});
+
     useEffect(() => {
+        async function getUser() {
+            try {
+                const auth = getAuth()
+                const user = auth.currentUser;
+                let authUser;
+                if (user) {
+                    authUser = user.uid;
+                } else {
+                    authUser = null;
+                }
+                const response = await axios.get('http://localhost:8888/users/' + authUser);
+                setGameData(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         getUser();
     }, []);
+
+    useEffect(() => {
+        const stats = gameData.reduce((accumulator, game) => {
+            const { id, solve_time_secs, size } = game;
+            console.log(game);
+            if (!accumulator[size]) {
+                accumulator[size] = {
+                    solveCount: 0,
+                    totalTime: 0,
+                    averageTime: 0,
+                };
+            }
+            accumulator[size].solveCount++;
+            accumulator[size].totalTime += solve_time_secs;
+            return accumulator;
+        }, {});
+
+        for (const size in stats) {
+            console.log('size', size);
+            stats[size].averageTime = stats[size].totalTime / stats[size].solveCount;
+        }
+        console.log('stats', stats);
+        setUserStats(stats);
+        console.log('userstats', userStats);
+    }, [gameData]);
 
     return (
         <div className='sub-menu'>

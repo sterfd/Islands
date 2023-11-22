@@ -65,7 +65,7 @@ def valid_solution(board):
                         board_connection.union((r, c), (r + dr, c + dc))
             elif cell > 0:
                 if (r, c) in lands_checked:
-                    print("not valid: Connected islands")
+                    print("not valid: Connected numbered islands")
                     return False
                 lands_checked.add((r, c))
                 queue = [(r, c)]
@@ -102,12 +102,6 @@ def valid_solution(board):
                 return False
     return True
 
-
-# testBoard = [[-2, -2, -2, -2, -2],
-#     [-2, -2, -2, 1, -2],
-#     [3, -2, -2, -2, 5],
-#     [-2, 1, -2, -2, -2],
-#     [-2, -2, -2, -2, -2]]
 
 testSolution = [
     [0, 0, 0, 0, 0, 0, 0],

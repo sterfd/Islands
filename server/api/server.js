@@ -91,30 +91,13 @@ server.get('/users/:id', async (req, res) => {
     // GET user info
     try {
         const query = await db.select('game_metrics.id', 'game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
-        // const query = await db.select('*').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
-
-        // const query = await db('game_metrics').join('games', 'id', '=', 'id')
-        const display = await db.select('*').where({ user_id: req.params.id }).from('game_metrics');
+        // const display = await db.select('*').where({ user_id: req.params.id }).from('game_metrics');
         res.status(200).json(query);
         console.log('from server,', query)
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Error getting display name' });
     }
-    // which join am i using?
-
-    // join game and game metric table to get size, and user metrics
-    // select size, solve time, game id
-
-    // this page will display: total puzzles solved, puzzles solved and avg solve times of each size
-
-    // try {
-    //     const metrics = await db.select('*').where({ id: req.params.id }).from('game_metrics');
-    //     res.status(200).json(metrics);
-    // } catch (err) {
-    //     console.log(err);
-    //     res.status(500).json({ message: 'Error getting metrics.' })
-    // }
 });
 
 

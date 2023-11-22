@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignIn({ isSignInOpen }) {
@@ -27,11 +27,11 @@ export default function SignIn({ isSignInOpen }) {
         <div>
             <div className='sign-in-container'>
                 <div className='error-messages'>oh no</div>
-                <form onSubmit={signIn}>
+                <form id='sign-in-tab' onSubmit={signIn}>
                     <div className='user-form'>
-                        <input type='email' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}></input>
+                        <input id='sign-in-email' type='email' placeholder='Email' value={email} onChange={(event) => setEmail(event.target.value)}></input>
                     </div><div className='user-form'>
-                        <input type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}></input>
+                        <input id='sign-in-password' type='password' placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}></input>
                     </div>
                     <button type='submit' className='main rule'>Log In</button>
                 </form>

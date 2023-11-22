@@ -139,6 +139,10 @@ code {
   transform: translate(-50%, -50%);
 }
 
+.user-menu {
+  position: relative;
+}
+
 .logo {
   scale: 50%;
   transform: translate(-60%, 40%);
@@ -194,6 +198,10 @@ code {
 
 .about {
   width: 120px;
+}
+
+.signout {
+  width: 140px;
 }
 
 /* OVERLAY MENUS */
@@ -303,6 +311,9 @@ h2 {
 
 .sign-in-container {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .user-form {
@@ -322,10 +333,17 @@ input {
   transform: translate(-70%, -90%);
 }
 
+.sign-out-button-container {
+  /* position: absolute;
+  bottom: 20%;
+  right: 20%; */
+}
+
 .create {
   width: 210px;
 }
 
 .error-messages {
+  padding-top: 30px;
   height: 30px;
 }

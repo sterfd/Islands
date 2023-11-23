@@ -328,16 +328,12 @@ input {
 
 .main-button-container {
   position: absolute;
-  top: 90%;
+  top: 95%;
   left: 70%;
-  transform: translate(-70%, -90%);
+  transform: translate(-70%, -95%);
 }
 
-.sign-out-button-container {
-  /* position: absolute;
-  bottom: 20%;
-  right: 20%; */
-}
+
 
 .create {
   width: 210px;
@@ -346,4 +342,32 @@ input {
 .error-messages {
   padding-top: 30px;
   height: 30px;
+}
+
+.stats {
+  color: #e6ac5a;
+  font: "Helvetica Neue", Helvetica, Arial;
+  font-weight: bold;
+  background: #297383;
+  border: none;
+  text-align: left;
+  /* margin: 10px; */
+  padding-left: 5px;
+  height: 60px;
+  width: 60px;
+  font-size: 40px;
+}
+
+.stat-container {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  /* flex-direction: column; */
+}
+
+h3 {
+  color: #F5F5F5;
+  font-size: 20px;
+  margin: 10px;
+
 }

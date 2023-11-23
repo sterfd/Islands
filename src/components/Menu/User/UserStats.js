@@ -6,9 +6,6 @@ import { auth } from '../../firebase';
 export default function UserStats({ isOpen, displayName, gameData }) {
     const [userStats, setUserStats] = useState({});
 
-    // user details component show number of games solved of each type, maybe cute tiles of solved puzzles with times
-    // sign out button
-
     useEffect(() => {
         const stats = gameData.reduce((accumulator, game) => {
             const { id, solve_time_secs, size } = game;
@@ -44,10 +41,34 @@ export default function UserStats({ isOpen, displayName, gameData }) {
         }
     }
 
+    function convertTime(seconds) {
+        let timeMessage;
+        if (seconds < 60) {
+            timeMessage = Math.floor(seconds) + ' seconds';
+        } else if (seconds < 3600) {
+            timeMessage = Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+        } else {
+            timeMessage = Math.floor(seconds / 3600) + ' hours, ' + Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+        }
+        return timeMessage
+    }
+
     return (
         <div className='log-in-page'>
-            <h1>Hello {displayName}!</h1>
-            <h1>You have solved {gameData.length} games</h1>
+            <h2>Hello {displayName}!</h2>
+            <h1>You have solved {gameData.length} games in total!</h1>
+            <div>
+                {Object.entries(userStats).map(([size, data]) => (
+                    <div className='stat-container'>
+                        <button className='stats' key={size}>{size}</button>
+                        <ul>
+                            <h3>Games solved: {data.solveCount}</h3>
+                            <h3>Average solve time: {convertTime(data.averageTime)}</h3>
+                        </ul>
+                    </div>
+                ))}
+            </div>
+
             <div className='sign-out-button-container'>
                 <button className='main signout' onClick={userSignOut}>Sign Out</button>
             </div>

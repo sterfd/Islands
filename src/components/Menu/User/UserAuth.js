@@ -4,9 +4,7 @@ import AuthDetails from './AuthDetails';
 import SignIn from './UserSignIn';
 import SignUp from './UserSignUp'
 
-export default function User({ needsAuth }) {
-    // NEED TO SEND USER TO USERSTATS PAGE WHEN SIGNED IN
-
+export default function User({ needsAuth, onSignIn }) {
     const [logInOpen, setLogInOpen] = useState(true);
 
     if (!needsAuth) {
@@ -38,9 +36,9 @@ export default function User({ needsAuth }) {
                         <div className='vertical-line'></div>
                         <button className='user-tab inactive' id='signup' onClick={() => changeTab('signUp')}>Sign Up</button>
                     </div>
-                    <SignIn isSignInOpen={logInOpen} />
-                    <SignUp isSignUpOpen={!logInOpen} />
-                    <AuthDetails />
+                    <SignIn isSignInOpen={logInOpen} onSignIn={onSignIn} />
+                    <SignUp isSignUpOpen={!logInOpen} onSignIn={onSignIn} />
+                    {/* <AuthDetails /> */}
                     <div className='main-button-container'>
                         <Link className='main' style={{ textDecoration: 'none' }} to='/'>Main Menu
                         </Link>

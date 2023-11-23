@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 
-export default function UserStats({ isOpen, displayName, gameData }) {
+export default function UserStats({ isOpen, displayName, gameData, onSignOut }) {
     const [userStats, setUserStats] = useState({});
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function UserStats({ isOpen, displayName, gameData }) {
             </div>
 
             <div className='sign-out-button-container'>
-                <button className='main signout' onClick={userSignOut}>Sign Out</button>
+                <button className='main signout' onClick={onSignOut}>Sign Out</button>
             </div>
             <div className='main-button-container'>
                 <Link className='main' style={{ textDecoration: 'none' }} to='/'>Main Menu

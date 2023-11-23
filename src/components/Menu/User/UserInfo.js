@@ -4,16 +4,27 @@ import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import UserAuth from './UserAuth';
 import UserStats from './UserStats';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 export default function User() {
     const [gameData, setGameData] = useState([]);
     const [username, setUsername] = useState(null);
-    const [userIn, setUserIn] = useState(false);
 
-    // if signed in - 
-    // user details component show number of games solved of each type, maybe cute tiles of solved puzzles with times
-    // sign out button
+    async function handleSignOut() {
+        try {
+            const response = await signOut(auth);
+            console.log(response);
+            setUsername(null);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     // 
+
+    function handleSignIn(displayName) {
+        setUsername(displayName);
+    }
 
     // if signed out - show log in or sign up page
     useEffect(() => {
@@ -23,7 +34,6 @@ export default function User() {
                 const user = auth.currentUser;
                 if (user) {
                     setUsername(user.displayName);
-                    setUserIn(true);
                     const response = await axios.get('http://localhost:8888/users/' + user.uid);
                     setGameData(response.data);
                     console.log('displaying data for', user.displayName);
@@ -36,13 +46,13 @@ export default function User() {
             }
         }
         getUser();
-    }, []);
+    }, [username]);
 
 
     return (
         <div>
-            <UserAuth needsAuth={username == null} />
-            <UserStats isOpen={username != null} displayName={username} gameData={gameData} />
+            <UserAuth needsAuth={username == null} onSignIn={handleSignIn} />
+            <UserStats isOpen={username != null} displayName={username} gameData={gameData} onSignOut={handleSignOut} />
         </div>
     );
 

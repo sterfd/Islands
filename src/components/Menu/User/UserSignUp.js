@@ -20,13 +20,9 @@ export default function SignUp({ isSignUpOpen, onSignIn }) {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
             await updateProfile(userCredential.user, { displayName: newUsername });
-            console.log(userCredential);
-            console.log(userCredential.user.uid);
-            console.log(userCredential.user.displayName);
             const postData = { "user_id": userCredential.user.uid, "display_name": userCredential.user.displayName }
             axios.post('http://localhost:8888/users', postData)
                 .then(response => {
-                    console.log(response.data);
                     onSignIn(userCredential.user.displayName);
                 })
                 .catch(error => {

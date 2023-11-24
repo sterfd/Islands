@@ -25,6 +25,7 @@ export default function Game() {
     const [currentSquares, setCurrentSquares] = useState(history[currentMove]);
     const [averageTime, setAverageTime] = useState(0);
     const [isRulesOpen, setIsRulesOpen] = useState(false);
+    const [buttonStatus, setButtonStatus] = useState('');
     const { state } = useLocation();
     const boardSize = state.size;
 
@@ -80,6 +81,17 @@ export default function Game() {
         setAverageTime(averageSolveTime);
     }
 
+    function handleMenuHover(button) {
+        const buttonExp = document.getElementById('b1');
+        buttonExp.className = 'fade1';
+        setButtonStatus(button);
+    }
+
+    function handleMenuLeave() {
+        const buttonExp = document.getElementById('b1');
+        buttonExp.className = 'fadeout';
+    }
+
     const toggleRules = () => {
         setIsRulesOpen(!isRulesOpen);
     }
@@ -118,11 +130,12 @@ export default function Game() {
         <div className='game'>
             <div className='status'>
                 <Timer seconds={seconds} />
+                <h1 className='status-menu' id='b1'>{buttonStatus}</h1>
             </div>
             <div className='game-board'>
                 <Board squares={currentSquares} onPlay={handlePlay} isComplete={isComplete} />
             </div>
-            <GameMenu onRestartGame={handleRestartGame} onJumpTo={handleJumpTo} currentMove={currentMove} toggleRules={toggleRules} />
+            <GameMenu onRestartGame={handleRestartGame} onJumpTo={handleJumpTo} currentMove={currentMove} toggleRules={toggleRules} mouseOver={handleMenuHover} mouseLeave={handleMenuLeave} />
             <Overlay isOpen={isComplete} time={seconds} currentSize={boardSize} playAgain={getNewGame} averageTime={averageTime}></Overlay>
             <Rules isRulesOpen={isRulesOpen} toggleRules={toggleRules} />
         </div>

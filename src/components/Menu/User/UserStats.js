@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase';
 
 export default function UserStats({ isOpen, displayName, gameData, onSignOut }) {
     const [userStats, setUserStats] = useState({});
 
     useEffect(() => {
         const stats = gameData.reduce((accumulator, game) => {
-            const { id, solve_time_secs, size } = game;
+            const { solve_time_secs, size } = game;
             if (!accumulator[size]) {
                 accumulator[size] = {
                     solveCount: 0,
@@ -25,20 +23,10 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
             stats[size].averageTime = stats[size].totalTime / stats[size].solveCount;
         }
         setUserStats(stats);
-        console.log(stats);
     }, [gameData]);
 
     if (!isOpen) {
         return null;
-    }
-
-    async function userSignOut() {
-        try {
-            const response = await signOut(auth);
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     function convertTime(seconds) {
@@ -46,9 +34,9 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
         if (seconds < 60) {
             timeMessage = Math.floor(seconds) + ' seconds';
         } else if (seconds < 3600) {
-            timeMessage = Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+            timeMessage = Math.floor(seconds / 60) + ' minutes and ' + Math.floor(seconds % 60) + ' seconds';
         } else {
-            timeMessage = Math.floor(seconds / 3600) + ' hours, ' + Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+            timeMessage = Math.floor(seconds / 3600) + ' hours, ' + Math.floor(seconds / 60) + ' minutes and ' + Math.floor(seconds % 60) + ' seconds';
         }
         return timeMessage
     }
@@ -61,10 +49,10 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
                 {Object.entries(userStats).map(([size, data]) => (
                     <div className='stat-container'>
                         <button className='stats' key={size}>{size}</button>
-                        <ul>
+                        <div>
                             <h3>Games solved: {data.solveCount}</h3>
                             <h3>Average solve time: {convertTime(data.averageTime)}</h3>
-                        </ul>
+                        </div>
                     </div>
                 ))}
             </div>

@@ -64,7 +64,6 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
     const putData = req.body;
     const gameID = req.params.id;
     try {
-        console.log('updating computed metrics for ' + gameID);
         await db('computed_game_metrics').where({ id: req.params.id }).update(putData);
         res.status(200).json({ message: 'Record updated successfully' });
     } catch (err) {
@@ -90,10 +89,8 @@ server.post('/users', async (req, res) => {
 server.get('/users/:id', async (req, res) => {
     // GET user info
     try {
-        const query = await db.select('game_metrics.id', 'game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
-        // const display = await db.select('*').where({ user_id: req.params.id }).from('game_metrics');
+        const query = await db.select('game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
         res.status(200).json(query);
-        console.log('from server,', query)
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Error getting display name' });

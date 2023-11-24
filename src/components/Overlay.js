@@ -11,16 +11,16 @@ export function Overlay({ isOpen, time, currentSize, playAgain, averageTime }) {
         if (seconds < 60) {
             timeMessage = Math.floor(seconds) + ' seconds';
         } else if (seconds < 3600) {
-            timeMessage = Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+            timeMessage = Math.floor(seconds / 60) + ' minutes and ' + Math.floor(seconds % 60) + ' seconds';
         } else {
-            timeMessage = Math.floor(seconds / 3600) + ' hours, ' + Math.floor(seconds / 60) + ' minutes and ' + seconds % 60 + ' seconds';
+            timeMessage = Math.floor(seconds / 3600) + ' hours, ' + Math.floor(seconds / 60) + ' minutes and ' + Math.floor(seconds % 60) + ' seconds';
         }
         return timeMessage
 
     }
 
     let avgTimeMessage;
-    if (averageTime == 0) {
+    if (averageTime === 0) {
         avgTimeMessage = 'You are the first one to solve this puzzle!';
     } else {
         avgTimeMessage = 'The average solve time is: ' + convertTime(averageTime) + '!'

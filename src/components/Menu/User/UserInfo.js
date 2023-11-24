@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import UserAuth from './UserAuth';
@@ -26,7 +25,6 @@ export default function User() {
         setUsername(displayName);
     }
 
-    // if signed out - show log in or sign up page
     useEffect(() => {
         async function getUser() {
             try {
@@ -36,8 +34,6 @@ export default function User() {
                     setUsername(user.displayName);
                     const response = await axios.get('http://localhost:8888/users/' + user.uid);
                     setGameData(response.data);
-                    console.log('displaying data for', user.displayName);
-                    console.log(response.data);
                 } else {
                     setUsername(null);
                 }
@@ -51,7 +47,7 @@ export default function User() {
 
     return (
         <div>
-            <UserAuth needsAuth={username == null} onSignIn={handleSignIn} />
+            <UserAuth needsAuth={username === null} onSignIn={handleSignIn} />
             <UserStats isOpen={username != null} displayName={username} gameData={gameData} onSignOut={handleSignOut} />
         </div>
     );

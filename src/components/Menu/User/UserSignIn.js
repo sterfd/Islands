@@ -16,11 +16,9 @@ export default function SignIn({ isSignInOpen, onSignIn }) {
         event.preventDefault();
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log(userCredential);
             onSignIn(userCredential.user.displayName);
         } catch (error) {
             if (error.code in errorMapping) {
-                console.log('we got something here');
                 setErrorMessage(errorMapping[error.code]);
             }
             console.log(error);

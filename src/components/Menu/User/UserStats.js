@@ -47,8 +47,8 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
             <h1>You have solved {gameData.length} games in total!</h1>
             <div>
                 {Object.entries(userStats).map(([size, data]) => (
-                    <div className='stat-container'>
-                        <button className='stats' key={size}>{size}</button>
+                    <div className='stat-container' key={size}>
+                        <button className='stats'>{size}</button>
                         <div>
                             <h3>Games solved: {data.solveCount}</h3>
                             <h3>Average solve time: {convertTime(data.averageTime)}</h3>

@@ -13,7 +13,7 @@ import { Rules } from './Rules';
 export default function Game() {
     const auth = getAuth();
     const user = auth.currentUser;
-    const [authUser, setAuthUser] = useState(null);
+    const [authUser, setAuthUser] = useState('');
     const [puzzleID, setPuzzleID] = useState(0)
     const [startingBoard, setStartingBoard] = useState([]);
     const [solutionBoard, setSolutionBoard] = useState([]);
@@ -25,7 +25,7 @@ export default function Game() {
     const [currentSquares, setCurrentSquares] = useState(history[currentMove]);
     const [averageTime, setAverageTime] = useState(0);
     const [isRulesOpen, setIsRulesOpen] = useState(false);
-    const [buttonStatus, setButtonStatus] = useState('');
+    const [buttonStatus, setButtonStatus] = useState(' ');
     const { state } = useLocation();
     const boardSize = state.size;
 
@@ -82,14 +82,14 @@ export default function Game() {
     }
 
     function handleMenuHover(button) {
-        const buttonExp = document.getElementById('b1');
-        buttonExp.className = 'fade1';
         setButtonStatus(button);
+        const buttonExp = document.getElementById('b1');
+        buttonExp.className = 'status-menu fade1';
     }
 
     function handleMenuLeave() {
         const buttonExp = document.getElementById('b1');
-        buttonExp.className = 'fadeout';
+        buttonExp.className = 'status-menu fadeout';
     }
 
     const toggleRules = () => {
@@ -97,18 +97,24 @@ export default function Game() {
     }
 
     async function getNewGame() {
-        await NewGame(boardSize, handleNewGame);
+        await NewGame(boardSize, handleNewGame, authUser);
     }
 
     useEffect(() => {
-        getNewGame();
         if (user) {
             setAuthUser(user.uid);
+
         } else {
             setAuthUser(null);
         }
+    }, [user]);
+
+    useEffect(() => {
+        if (authUser !== '') {
+            getNewGame();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [authUser]);
 
 
     useEffect(() => {
@@ -128,7 +134,7 @@ export default function Game() {
 
     return (
         <div className='game'>
-            <div className='status'>
+            <div className='status-bar'>
                 <Timer seconds={seconds} />
                 <h1 className='status-menu' id='b1'>{buttonStatus}</h1>
             </div>

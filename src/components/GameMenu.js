@@ -20,9 +20,9 @@ export function GameMenu({ onRestartGame, onJumpTo, currentMove, toggleRules, mo
             <button className='bar' onClick={() => onJumpTo(currentMove - 1)}>
                 <img className='undo-img' src={undoButton} alt='' onMouseEnter={e => mouseOver('Undo')} onMouseLeave={mouseLeave}></img>
             </button>
-            <button className='bar'>
+            {/* <button className='bar'>
                 <img className='check-img' src={checkButton} alt='' onMouseEnter={e => mouseOver('Hint')} onMouseLeave={mouseLeave}></img>
-            </button>
+            </button> */}
             <button className='bar' onClick={() => toggleRules()}>
                 <img className='rules-img' src={rules} alt='' onMouseEnter={e => mouseOver('Rules')} onMouseLeave={mouseLeave}></img>
             </button>

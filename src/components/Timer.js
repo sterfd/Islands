@@ -7,7 +7,7 @@ export function Timer({ seconds }) {
 
     return (
         <div>
-            <div className='status'>
+            <div className='timer'>
                 <span>{('0' + hours).slice(-2)}:</span>
                 <span>{('0' + minutes).slice(-2)}:</span>
                 <span>{('0' + modSeconds).slice(-2)}</span>

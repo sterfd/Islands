@@ -14,13 +14,27 @@ server.get('/', (req, res) => {
     res.send('Welcome to the islands app server!')
 });
 
-server.get('/games/:boardsize', async (req, res) => {
+server.get('/games/:boardsize/:userID', async (req, res) => {
     // GET a random game with boardsize nxn
     try {
-        const games = await db.select('*').where({ size: req.params.boardsize }).from('games');
+        let query = db.select('*').where({ size: req.params.boardsize }).from('games');
+        if (req.params.userID !== 'null') {
+            query = query.whereNotExists(db.select(1).where({ user_id: req.params.userID }).whereRaw('"game_metrics"."id" = "games"."id"').from('game_metrics'));
+        }
+        const games = await query;
         const selectedGame = Math.floor(Math.random() * (games.length));
-        console.log(selectedGame, games[selectedGame].id);
+        console.log(games.length, req.params);
         res.status(200).json(games[selectedGame]);
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+server.get('/allgames', async (req, res) => {
+    //GET all games
+    try {
+        const games = await db.select('*').from('games');
+        res.status(200).json(games);
     } catch (err) {
         console.log(err);
     }

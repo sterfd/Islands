@@ -50,19 +50,18 @@ code {
   display: table;
 }
 
-.board-area {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
+.game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 /* GAME MENU */
 
-.status {
+.timer {
   text-align: center;
-  margin-top: 20px;
   font-weight: bold;
   font-size: 30px;
   font: "Helvetica Neue", Helvetica, Arial;
@@ -70,15 +69,14 @@ code {
 }
 
 .status-menu {
+  text-align: center;
   color: lightgray;
+  margin-top: 10px;
+  height: 20px;
 }
 
 .game-menu {
-  position: absolute;
-  top: 80%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
+  margin-top: 50px;
 }
 
 .bar {

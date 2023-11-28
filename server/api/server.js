@@ -14,7 +14,7 @@ const { Pool } = require('pg')
 const pool = new Pool({
     connectionString: process.env.REACT_APP_DATABASE_URL,
     ssl: {
-        rejectUnauthorized: true
+        rejectUnauthorized: true,
     }
 })
 

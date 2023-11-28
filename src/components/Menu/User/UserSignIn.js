@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignIn({ isSignInOpen, onSignIn }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
     const errorMapping = { 'auth/invalid-login-credentials': 'Invalid login credentials', "auth/credential-already-in-use": 'Credential already in use', "auth/email-already-in-use": "This email is being used for another account", "auth/internal-error": "Internal Error", "auth/invalid-email": "Invalid Email", "auth/wrong-password": "Wrong Password", "auth/missing-app-credential": "Missing App Credential", "auth/null-user": "Null User", "auth/rejected-credential": "Rejected Credential", "auth/too-many-requests": "Too many attempted, try again later", "auth/user-not-found": "User not found", "auth/weak-password": "Password is too weak" };
+    const auth = getAuth()
 
     if (!isSignInOpen) {
         return null;

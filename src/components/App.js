@@ -1,3 +1,4 @@
+// require('dotenv').config();
 import React from 'react';
 import { MainMenu } from "./Menu/MainMenu";
 

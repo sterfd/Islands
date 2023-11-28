@@ -4,11 +4,12 @@ import axios from 'axios';
 import UserAuth from './UserAuth';
 import UserStats from './UserStats';
 import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase';
+// import { auth } from '../../firebase';
 
 export default function User() {
     const [gameData, setGameData] = useState([]);
     const [username, setUsername] = useState(null);
+    const auth = getAuth()
 
     async function handleSignOut() {
         try {
@@ -28,7 +29,6 @@ export default function User() {
     useEffect(() => {
         async function getUser() {
             try {
-                const auth = getAuth()
                 const user = auth.currentUser;
                 if (user) {
                     setUsername(user.displayName);

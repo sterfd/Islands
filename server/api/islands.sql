@@ -1,10 +1,10 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE IF NOT EXISTS "computed_game_metrics" (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"number_of_solves"	INTEGER NOT NULL,
-	"avg_time"	INTEGER NOT NULL,
-	PRIMARY KEY("id")
+CREATE TABLE IF NOT EXISTS computed_game_metrics (
+	id	INTEGER NOT NULL UNIQUE,
+	number_of_solves	INTEGER NOT NULL,
+	avg_time	INTEGER NOT NULL,
+	PRIMARY KEY(id)
 );
 INSERT INTO computed_game_metrics VALUES(52,3,38);
 INSERT INTO computed_game_metrics VALUES(1234,2,21);
@@ -212,12 +212,12 @@ INSERT INTO computed_game_metrics VALUES(983447,0,0);
 INSERT INTO computed_game_metrics VALUES(990760,0,0);
 INSERT INTO computed_game_metrics VALUES(995136,0,0);
 INSERT INTO computed_game_metrics VALUES(996223,0,0);
-CREATE TABLE IF NOT EXISTS "games" (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"size"	INTEGER NOT NULL,
-	"board"	TEXT NOT NULL UNIQUE,
-	"solution"	TEXT NOT NULL UNIQUE,
-	PRIMARY KEY("id")
+CREATE TABLE IF NOT EXISTS games (
+	id	INTEGER NOT NULL UNIQUE,
+	size	INTEGER NOT NULL,
+	board	TEXT NOT NULL UNIQUE,
+	solution	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY(id)
 );
 INSERT INTO games VALUES(52,5,'[[-2, -2, -2, -2, 2], [-2, -2, -2, -2, -2], [-2, 2, -2, 2, -2], [-2, -2, -2, -2, -2], [6, -2, -2, -2, -2]]','[[0, 0, 0, -1, 2], [0, -1, 0, 0, 0], [0, 2, 0, 2, -1], [-1, 0, 0, 0, 0], [6, -1, -1, -1, -1]]');
 INSERT INTO games VALUES(1234,5,'[[-2, -2, -2, 1, -2], [-2, -2, -2, -2, -2], [-2, 2, -2, 6, -2], [-2, -2, -2, -2, -2], [-2, 3, -2, -2, -2]]','[[0, 0, 0, 1, 0], [0, -1, 0, 0, 0], [0, 2, 0, 6, -1], [-1, 0, 0, -1, -1], [-1, 3, 0, -1, -1]]');
@@ -430,11 +430,11 @@ INSERT INTO games VALUES(983447,5,'[[2, -2, -2, -2, -2], [-2, -2, -2, -2, -2], [
 INSERT INTO games VALUES(990760,5,'[[2, -2, -2, -2, -2], [-2, -2, -2, -2, -2], [5, -2, -2, -2, 4], [-2, -2, -2, -2, -2], [-2, -2, -2, -2, 3]]','[[2, -1, 0, -1, -1], [0, 0, 0, 0, -1], [5, -1, -1, 0, 4], [-1, 0, 0, 0, 0], [-1, 0, -1, -1, 3]]');
 INSERT INTO games VALUES(995136,9,'[[-2, -2, -2, -2, -2, -2, -2, -2, -2], [-2, -2, 4, -2, -2, 4, -2, 2, -2], [-2, -2, -2, -2, -2, -2, -2, -2, -2], [-2, -2, -2, 1, -2, -2, -2, -2, -2], [-2, -2, -2, -2, -2, -2, -2, -2, -2], [-2, -2, -2, -2, -2, 5, -2, -2, -2], [-2, -2, -2, -2, -2, -2, -2, -2, -2], [-2, 1, -2, 2, -2, -2, 5, -2, -2], [-2, -2, -2, -2, -2, -2, -2, -2, -2]]','[[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, -1, 4, 0, -1, 4, 0, 2, 0], [0, -1, 0, 0, 0, -1, 0, -1, 0], [0, -1, 0, 1, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -1, 0], [0, -1, -1, -1, -1, 5, 0, -1, 0], [0, 0, 0, 0, 0, 0, 0, -1, 0], [0, 1, 0, 2, -1, 0, 5, -1, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]');
 INSERT INTO games VALUES(996223,5,'[[-2, -2, -2, -2, -2], [-2, 1, -2, -2, 2], [-2, -2, -2, -2, -2], [1, -2, -2, 2, -2], [-2, -2, -2, -2, -2]]','[[0, 0, 0, 0, 0], [0, 1, 0, -1, 2], [0, 0, 0, 0, 0], [1, 0, -1, 2, 0], [0, 0, 0, 0, 0]]');
-CREATE TABLE IF NOT EXISTS "game_metrics" (
-	"id"	INTEGER NOT NULL,
-	"user_id"	TEXT,
-	"solve_time_secs"	INTEGER NOT NULL,
-	"solve_date_yymmdd"	INTEGER NOT NULL
+CREATE TABLE IF NOT EXISTS game_metrics (
+	id	INTEGER NOT NULL,
+	user_id	TEXT,
+	solve_time_secs	INTEGER NOT NULL,
+	solve_date_yymmdd	INTEGER NOT NULL
 );
 INSERT INTO game_metrics VALUES(52,NULL,55,230910);
 INSERT INTO game_metrics VALUES(1234,NULL,26,230911);
@@ -529,10 +529,10 @@ INSERT INTO game_metrics VALUES(142740,'RCA6dudj62MtDBG5H2Du7B1QMvI2',140,231124
 INSERT INTO game_metrics VALUES(699301,'RCA6dudj62MtDBG5H2Du7B1QMvI2',40,231124);
 INSERT INTO game_metrics VALUES(137439,'RCA6dudj62MtDBG5H2Du7B1QMvI2',15,231124);
 INSERT INTO game_metrics VALUES(793583,'RCA6dudj62MtDBG5H2Du7B1QMvI2',17,231124);
-CREATE TABLE IF NOT EXISTS "users" (
-	"user_id"	TEXT NOT NULL UNIQUE,
-	"display_name"	TEXT NOT NULL,
-	PRIMARY KEY("user_id")
+CREATE TABLE IF NOT EXISTS users (
+	user_id	TEXT NOT NULL UNIQUE,
+	display_name	TEXT NOT NULL,
+	PRIMARY KEY(user_id)
 );
 INSERT INTO users VALUES('IvH4oTLsGCR0LsalzUlNzF5AD072','steff');
 INSERT INTO users VALUES('CD7geR5y7zSjkCSc4iRuJFIAtqo1','stoof');

@@ -1,3 +1,4 @@
+const { Pool } = require('pg')
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -9,51 +10,27 @@ const db = require('./dbConfig');
 server.use(cors());
 server.use(helmet());
 server.use(express.json());
-const { Pool } = require('pg')
 
 const pool = new Pool({
+    // connectionString: process.env.REACT_APP_DATABASE_URL,
+    // ssl: {
+    //     rejectUnauthorized: true,
+    // }
     connectionString: process.env.REACT_APP_DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: true,
-    }
+    ssl: process.env.REACT_APP_DATABASE_URL ? true : false,
+
 })
 
 server.get('/', async (req, res) => {
     try {
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM games');
-        const results = { 'results': (result) ? result.rows : null };
-        console.log(results);
+        const result = await client.query("select * from games;");
         client.release();
+        res.send(result);
     } catch (err) {
         console.error(err);
         res.send("Error " + err);
     }
-    // const { Client } = require('pg');
-    // const client = new Client({
-    //     connectionString: process.env.REACT_APP_DATABASE_URL,
-    //     ssl: false
-    // });
-    // client.connect();
-    // client.query('SELECT * FROM games;', (err, res) => {
-    //     if (err) throw err;
-    //     for (let row of res.rows) {
-    //         console.log(JSON.stringify(row));
-    //     }
-    //     client.end();
-    // });
-
-    // db.raw('SELECT * FROM games;')
-    //     // db.select('*').from(public.games)
-    //     .then((result) => {
-    //         console.log('Connection successful:', result);
-    //         // Handle further database operations if needed
-    //     })
-    //     .catch((error) => {
-    //         console.error('Connection error:', error);
-    //         // Handle connection errors
-    //     });
-    res.send('Welcome to the islands app server!');
 
 });
 

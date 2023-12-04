@@ -12,12 +12,12 @@ server.use(helmet());
 server.use(express.json());
 
 const pool = new Pool({
-    // connectionString: process.env.REACT_APP_DATABASE_URL,
-    // ssl: {
-    //     rejectUnauthorized: true,
-    // }
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL ? true : false,
+    connectionString: process.env.REACT_APP_DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,
+    }
+    // connectionString: process.env.DATABASE_URL,
+    // ssl: process.env.DATABASE_URL ? true : false,
 
 })
 

@@ -16,8 +16,8 @@ const pool = new Pool({
     // ssl: {
     //     rejectUnauthorized: true,
     // }
-    connectionString: process.env.REACT_APP_DATABASE_URL,
-    ssl: process.env.REACT_APP_DATABASE_URL ? true : false,
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL ? true : false,
 
 })
 

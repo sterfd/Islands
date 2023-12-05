@@ -33,14 +33,18 @@ server.get('/', async (req, res) => {
 server.get('/games/:boardsize/:userID', async (req, res) => {
     try {
         const client = await pool.connect();
-        const gameQuery = `select * from games where size = 5`;
+        const gameQuery = "SELECT * FROM games WHERE size = 5";
         const game = await client.query(gameQuery);
         client.release();
-        const selectedGame = Math.floor(Math.random() * (game.length));
-        console.log(game.length, req.params);
+        if (game.rows.length > 0) {
+            const selectedGameIndex = Math.floor(Math.random() * game.rows.length);
+            const selectedGame = game.rows[selectedGameIndex];
+            console.log(game.rows.length, req.params);
 
-        res.send(game[selectedGame]);
-        // res.status(200).json(game[selectedGame]);
+            res.status(200).json(selectedGame); // Sending the selected game as JSON
+        } else {
+            res.status(404).json({ message: 'No games found for the specified size.' });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error getting game.' })

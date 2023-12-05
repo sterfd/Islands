@@ -33,7 +33,7 @@ server.get('/', async (req, res) => {
 server.get('/games/:boardsize/:userID', async (req, res) => {
     try {
         const client = await pool.connect();
-        const gameQuery = `SELECT * FROM games WHERE size = 5`;
+        const gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
         const game = await client.query(gameQuery);
         client.release();
         if (game.rows.length > 0) {

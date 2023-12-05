@@ -38,7 +38,9 @@ server.get('/games/:boardsize/:userID', async (req, res) => {
         client.release();
         const selectedGame = Math.floor(Math.random() * (game.length));
         console.log(game.length, req.params);
-        res.status(200).json(game[selectedGame]);
+
+        res.send(game[selectedGame]);
+        // res.status(200).json(game[selectedGame]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error getting game.' })

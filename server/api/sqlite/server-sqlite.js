@@ -1,11 +1,11 @@
+const { Pool } = require('pg')
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const { Pool } = require('pg');
 
 const server = express();
 
-// const db = require('./sqlite/dbConfig');
+const db = require('./dbConfig');
 
 server.use(cors());
 server.use(helmet());
@@ -16,6 +16,9 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false,
     }
+    // connectionString: process.env.DATABASE_URL,
+    // ssl: process.env.DATABASE_URL ? true : false,
+
 })
 
 server.get('/', async (req, res) => {
@@ -28,35 +31,23 @@ server.get('/', async (req, res) => {
         console.error(err);
         res.send("Error " + err);
     }
+
 });
 
 server.get('/games/:boardsize/:userID', async (req, res) => {
-    try {
-        const client = await pool.connect();
-        const gameQuery = `select * where size = ${req.params.boardsize} from games`;
-        const game = await client.query(gameQuery);
-        client.release();
-        const selectedGame = Math.floor(Math.random() * (game.length));
-        console.log(game.length, req.params);
-        res.status(200).json(game[selectedGame]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error getting game.' })
-    }
-
     // GET a random game with boardsize nxn
-    // try {
-    //     let query = db.select('*').where({ size: req.params.boardsize }).from('games');
-    //     if (req.params.userID !== 'null') {
-    //         query = query.whereNotExists(db.select(1).where({ user_id: req.params.userID }).whereRaw('"game_metrics"."id" = "games"."id"').from('game_metrics'));
-    //     }
-    //     const games = await query;
-    //     const selectedGame = Math.floor(Math.random() * (games.length));
-    //     console.log(games.length, req.params);
-    //     res.status(200).json(games[selectedGame]);
-    // } catch (err) {
-    //     console.log(err);
-    // }
+    try {
+        let query = db.select('*').where({ size: req.params.boardsize }).from('games');
+        if (req.params.userID !== 'null') {
+            query = query.whereNotExists(db.select(1).where({ user_id: req.params.userID }).whereRaw('"game_metrics"."id" = "games"."id"').from('game_metrics'));
+        }
+        const games = await query;
+        const selectedGame = Math.floor(Math.random() * (games.length));
+        console.log(games.length, req.params);
+        res.status(200).json(games[selectedGame]);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 server.get('/allgames', async (req, res) => {
@@ -72,22 +63,12 @@ server.get('/allgames', async (req, res) => {
 server.get('/game_metrics/:id', async (req, res) => {
     // GET the raw metrics of puzzle with id
     try {
-        const client = await pool.connect();
-        const metricQuery = `select * where id = ${req.params.id} from game_metrics`;
-        const metrics = await client.query(metricQuery);
-        client.release();
+        const metrics = await db.select('*').where({ id: req.params.id }).from('game_metrics');
         res.status(200).json(metrics);
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500).json({ message: 'Error getting metrics.' })
     }
-
-    // try {
-    //     const metrics = await db.select('*').where({ id: req.params.id }).from('game_metrics');
-    //     res.status(200).json(metrics);
-    // } catch (err) {
-    //     console.log(err);
-    // }
 });
 
 server.get('/computed_game_metrics/:id', async (req, res) => {

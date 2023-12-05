@@ -33,7 +33,7 @@ server.get('/', async (req, res) => {
 server.get('/games/:boardsize/:userID', async (req, res) => {
     try {
         const client = await pool.connect();
-        const gameQuery = `select * from games where size = ${req.params.boardsize}`;
+        const gameQuery = `select * from games where size = 5`;
         const game = await client.query(gameQuery);
         client.release();
         const selectedGame = Math.floor(Math.random() * (game.length));

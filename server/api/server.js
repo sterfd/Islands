@@ -75,7 +75,7 @@ server.get('/game_metrics/:id', async (req, res) => {
     // GET the raw metrics of puzzle with id
     try {
         const client = await pool.connect();
-        const metricQuery = `select * where id = ${req.params.id} from game_metrics`;
+        const metricQuery = `SELECT * WHERE id = ${req.params.id} FROM game_metrics`;
         const metrics = await client.query(metricQuery);
         client.release();
         res.status(200).json(metrics);
@@ -97,7 +97,7 @@ server.get('/computed_game_metrics/:id', async (req, res) => {
     // GET the raw metrics of puzzle with id
     try {
         const client = await pool.connect();
-        const compMetricQuery = `select * where id = ${req.params.id} from computed_game_metrics`;
+        const compMetricQuery = `SELECT * WHERE id = ${req.params.id} FROM computed_game_metrics`;
         const metrics = await client.query(compMetricQuery);
         client.release();
         res.status(200).json(metrics);
@@ -142,6 +142,19 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
 server.post('/users', async (req, res) => {
     // POST user info
     // new user, add user_id, display_name
+
+    // INSERT STATEMENTS
+    // try {
+    //     const client = await pool.connect();
+    //     const metricQuery = `SELECT * WHERE id = ${req.params.id} FROM game_metrics`;
+    //     const metrics = await client.query(metricQuery);
+    //     client.release();
+    //     res.status(200).json(metrics);
+    // } catch (err) {
+    //     console.error(err);
+    //     res.status(500).json({ message: 'Error getting metrics.' })
+    // }
+
     const postData = req.body;
     try {
         const metrics = await db('users').insert(postData);
@@ -155,13 +168,26 @@ server.post('/users', async (req, res) => {
 
 server.get('/users/:id', async (req, res) => {
     // GET user info
-    try {
-        const query = await db.select('game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
-        res.status(200).json(query);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Error getting display name' });
-    }
+    // JOIN STATEMENTS
+    // try {
+    //     const client = await pool.connect();
+    //     const metricQuery = `select solve_time_secs, size where id = ${req.params.id} from game_metrics`;
+    //     const metrics = await client.query(metricQuery);
+    //     client.release();
+    //     res.status(200).json(metrics);
+    // } catch (err) {
+    //     console.error(err);
+    //     res.status(500).json({ message: 'Error getting metrics.' })
+    // }
+
+
+    // try {
+    //     const query = await db.select('game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
+    //     res.status(200).json(query);
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).json({ message: 'Error getting display name' });
+    // }
 });
 
 

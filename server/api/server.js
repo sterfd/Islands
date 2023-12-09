@@ -36,15 +36,11 @@ server.get('/games/:boardsize/:userID', async (req, res) => {
         const gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
         const game = await client.query(gameQuery);
         client.release();
-        if (game.rows.length > 0) {
-            const selectedGameIndex = Math.floor(Math.random() * game.rows.length);
-            const selectedGame = game.rows[selectedGameIndex];
-            console.log(game.rows.length, req.params);
+        const selectedGameIndex = Math.floor(Math.random() * game.rows.length);
+        const selectedGame = game.rows[selectedGameIndex];
 
-            res.status(200).json(selectedGame); // Sending the selected game as JSON
-        } else {
-            res.status(404).json({ message: 'No games found for the specified size.' });
-        }
+        res.status(200).json(selectedGame); // Sending the selected game as JSON
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error getting game.' })
@@ -98,13 +94,25 @@ server.get('/game_metrics/:id', async (req, res) => {
 
 server.get('/computed_game_metrics/:id', async (req, res) => {
     // GET computed game metrics of puzzle with id
+    // GET the raw metrics of puzzle with id
     try {
-        const metrics = await db.select('*').where({ id: req.params.id }).from('computed_game_metrics');
+        const client = await pool.connect();
+        const compMetricQuery = `select * where id = ${req.params.id} from computed_game_metrics`;
+        const metrics = await client.query(compMetricQuery);
+        client.release();
         res.status(200).json(metrics);
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).json({ message: 'Error getting metrics.' })
     }
+
+    // try {
+    //     const metrics = await db.select('*').where({ id: req.params.id }).from('computed_game_metrics');
+    //     res.status(200).json(metrics);
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(500).json({ message: 'Error getting metrics.' })
+    // }
 });
 
 server.post('/game_metrics', async (req, res) => {

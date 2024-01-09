@@ -61,13 +61,19 @@ server.get('/games/:boardsize/:userID', async (req, res) => {
     // }
 });
 
-server.get('/allgames', async (req, res) => {
-    //GET all games
+server.get('/allgames/:userID', async (req, res) => {
     try {
-        const games = await db.select('*').from(games);
-        res.status(200).json(games);
+        const client = await pool.connect();
+        const gameQuery = `SELECT * FROM games WHERE games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = ${req.params.userID})`;
+        const game = await client.query(gameQuery);
+        client.release();
+        const selectedGame = game.rowCount;
+
+        res.status(200).json(selectedGame); // Sending the selected game as JSON
+
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).json({ message: 'Error getting game.' })
     }
 });
 

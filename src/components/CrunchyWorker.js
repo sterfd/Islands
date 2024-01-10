@@ -11,7 +11,8 @@ async function processMetrics(gameID) {
     const metricURL = databaseURL + 'game_metrics/' + gameID;
     // const { data } = await axios.get('http://localhost:8888/game_metrics/' + gameID);
     const { data } = await axios.get(metricURL);
-    if (data.length === 0) {
+    console.log(data);
+    if (data.rowCount === 0) {
         return 0;
     } else {
         const solveTimes = data.map((entry) => entry.solve_time_secs);

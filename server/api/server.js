@@ -35,7 +35,7 @@ server.get('/games/:boardsize/:userID', async (req, res) => {
         const client = await pool.connect();
         let gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
         if (req.params.userID) {
-            gameQuery += `AND games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
+            gameQuery += ` AND games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
         }
         const game = await client.query(gameQuery);
         client.release();

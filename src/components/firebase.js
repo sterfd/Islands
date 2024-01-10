@@ -15,5 +15,7 @@ const firebaseConfig = {
     databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
 };
 
+console.log(process.env.REACT_APP_FIREBASE_PROJECT_ID);
+
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const analytics = getAnalytics(app); 

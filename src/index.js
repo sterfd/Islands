@@ -9,7 +9,6 @@ import Play from './components/Menu/Play';
 import User from './components/Menu/User/UserInfo';
 import Game from './components/Game';
 
-
 export default function App() {
   return (
     <BrowserRouter>

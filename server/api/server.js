@@ -117,5 +117,22 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
     }
 });
 
+server.get('/users/:id', async (req, res) => {
+    // GET user info and stats
+    try {
+        // const query = await db.select('game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
+        // res.status(200).json(query);
+        const client = await pool.connect();
+        const userMetricQuery = `SELECT game_metrics.solve_time_secs, games.size FROM game_metrics JOIN games ON game_metrics.id = games.id WHERE user_id = '${req.params.id}'`;
+        const metrics = await client.query(userMetricQuery);
+        client.release();
+        res.status(200).json(metrics);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Error getting display name' });
+    }
+});
+
+
 
 module.exports = server;

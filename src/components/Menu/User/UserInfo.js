@@ -32,7 +32,7 @@ export default function User() {
                 const user = auth.currentUser;
                 if (user) {
                     setUsername(user.displayName);
-                    const response = await axios.get('http://localhost:8888/users/' + user.uid);
+                    const response = await axios.get('https://sterfd-islands-7f98ffd68a4e.herokuapp.com/' + user.uid);
                     setGameData(response.data);
                 } else {
                     setUsername(null);

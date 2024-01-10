@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { auth } from '../../firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import axios from 'axios';
 
@@ -21,14 +20,14 @@ export default function SignUp({ isSignUpOpen, onSignIn }) {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
             await updateProfile(userCredential.user, { displayName: newUsername });
-            const postData = { "user_id": userCredential.user.uid, "display_name": userCredential.user.displayName }
-            axios.post('http://localhost:8888/users', postData)
-                .then(response => {
-                    onSignIn(userCredential.user.displayName);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
+            // const postData = { "user_id": userCredential.user.uid, "display_name": userCredential.user.displayName }
+            // axios.post('http://localhost:8888/users', postData)
+            //     .then(response => {
+            //         onSignIn(userCredential.user.displayName);
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //     });
         } catch (error) {
             if (error.code in errorMapping) {
                 setErrorMessage(errorMapping[error.code]);

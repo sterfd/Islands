@@ -1,7 +1,5 @@
-// Load environment variables
-// require('dotenv').config();
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 
 // Access Firebase configuration
 const firebaseConfig = {
@@ -14,8 +12,6 @@ const firebaseConfig = {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
     databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
 };
-
-console.log(process.env.REACT_APP_FIREBASE_PROJECT_ID);
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app); 

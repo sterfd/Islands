@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignIn({ isSignInOpen, onSignIn }) {

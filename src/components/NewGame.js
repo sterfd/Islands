@@ -3,7 +3,14 @@ import axios from 'axios';
 
 export async function NewGame(boardSize, onNewGame, userID) {
     console.log(userID)
-    const { data } = await axios.get('http://localhost:8888/games/' + String(boardSize) + '/' + userID);
+    let getUrl = 'https://sterfd-islands-7f98ffd68a4e.herokuapp.com/games/' + String(boardSize);
+    if (userID !== null) {
+        getUrl += '/' + userID;
+    } else {
+        getUrl += '/' + '0';
+    }
+    const { data } = await axios.get(getUrl);
+    // const { data } = await axios.get('http://localhost:8888/games/' + String(boardSize) + '/' + userID);
     // const { data } = await axios.get('http://localhost:8888/games', getReqData);
 
     const gameID = JSON.parse(data.id);

@@ -33,15 +33,11 @@ server.get('/', async (req, res) => {
 server.get('/games/:boardsize/:userID', async (req, res) => {
     try {
         const client = await pool.connect();
-        let gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
-        if (req.params.userID) {
-            gameQuery += ` AND games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
-        }
+        const gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize} AND games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
         const game = await client.query(gameQuery);
         client.release();
         const selectedGameIndex = Math.floor(Math.random() * game.rows.length);
         const selectedGame = game.rows[selectedGameIndex];
-
         res.status(200).json(selectedGame); // Sending the selected game as JSON
 
     } catch (err) {
@@ -84,7 +80,7 @@ server.get('/game_metrics/:id', async (req, res) => {
     // GET the raw metrics of puzzle with id
     try {
         const client = await pool.connect();
-        const metricQuery = `SELECT * WHERE id = ${req.params.id} FROM game_metrics`;
+        const metricQuery = `SELECT * FROM game_metrics WHERE id = ${req.params.id}`;
         const metrics = await client.query(metricQuery);
         client.release();
         res.status(200).json(metrics);
@@ -106,7 +102,7 @@ server.get('/computed_game_metrics/:id', async (req, res) => {
     // GET the raw metrics of puzzle with id
     try {
         const client = await pool.connect();
-        const compMetricQuery = `SELECT * WHERE id = ${req.params.id} FROM computed_game_metrics`;
+        const compMetricQuery = `SELECT * FROM computed_game_metrics WHERE id = ${req.params.id}`;
         const metrics = await client.query(compMetricQuery);
         client.release();
         res.status(200).json(metrics);

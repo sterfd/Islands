@@ -33,7 +33,10 @@ server.get('/', async (req, res) => {
 server.get('/games/:boardsize/:userID', async (req, res) => {
     try {
         const client = await pool.connect();
-        const gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
+        let gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize}`;
+        if (req.params.userID !== 'null') {
+            gameQuery = `SELECT * FROM games WHERE size = ${req.params.boardsize} AND games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
+        }
         const game = await client.query(gameQuery);
         client.release();
         const selectedGameIndex = Math.floor(Math.random() * game.rows.length);

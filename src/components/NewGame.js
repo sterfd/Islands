@@ -7,7 +7,7 @@ export async function NewGame(boardSize, onNewGame, userID) {
     if (userID !== null) {
         getUrl += '/' + userID;
     } else {
-        getUrl += '/' + '0';
+        getUrl += '/' + 0;
     }
     const { data } = await axios.get(getUrl);
     // const { data } = await axios.get('http://localhost:8888/games/' + String(boardSize) + '/' + userID);

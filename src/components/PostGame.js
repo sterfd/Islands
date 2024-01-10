@@ -7,8 +7,9 @@ export function PostGame(id, user, time) {
     const day = today.getDate().toString().padStart(2, '0');
     const combinedDate = parseInt(`${year}${month}${day}`, 10);
     const postData = { "id": id, "user_id": user, "solve_time_secs": time, "solve_date_yymmdd": combinedDate };
+    const postURL = 'https://sterfd-islands-7f98ffd68a4e.herokuapp.com/game_metrics/';
 
-    axios.post('http://localhost:8888/game_metrics', postData)
+    axios.post(postURL, postData)
         .then(response => {
             console.log(response.data);
         })

@@ -59,6 +59,20 @@ server.get('/allgames/:userID', async (req, res) => {
     }
 });
 
+server.get('/game_metrics/:id', async (req, res) => {
+    // GET game metrics of puzzle with id
+    try {
+        const client = await pool.connect();
+        const metricQuery = `SELECT * FROM game_metrics WHERE id = ${req.params.id}`;
+        const metrics = await client.query(metricQuery);
+        client.release();
+        res.status(200).json(metrics);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error getting metrics.' })
+    }
+});
+
 server.get('/computed_game_metrics/:id', async (req, res) => {
     // GET computed game metrics of puzzle with id
     try {

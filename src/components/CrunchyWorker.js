@@ -13,10 +13,13 @@ async function processMetrics(gameID) {
     const { data } = await axios.get(metricURL);
     console.log('worker, gameID', gameID, 'data', data);
     if (Array.isArray(data.rows) && data.rows.length > 0) {
-        const solveTimes = data.map((entry) => entry.solve_time_secs);
+        const solveTimes = data.rows.map((entry) => entry.solve_time_secs);
         const sumTimes = solveTimes.reduce((acc, time) => acc + time, 0);
-        const averageTime = Math.floor(sumTimes / data.length);
-        const putData = { "id": gameID, "number_of_solves": data.length, "avg_time": averageTime };
+        const averageTime = Math.floor(sumTimes / data.rows.length);
+        const putData = { "id": gameID, "number_of_solves": data.rows.length, "avg_time": averageTime };
+
+        console.log(putData);
+
         const putComputedURL = databaseURL + 'computed_game_metrics/' + gameID
         await axios.put(putComputedURL, putData);
         return averageTime;

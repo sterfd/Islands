@@ -105,6 +105,10 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
     // PUT computed game stats (avg and number of solves) for puzzle with id'
     const { id, solveTotal, avgTime } = req.body;
     const gameID = req.params.id;
+
+    console.log('req.body', req.body);
+    console.log(id, solveTotal, avgTime);
+
     try {
         const client = await pool.connect();
         const putMetricQuery = `UPDATE computed_game_metrics SET number_of_solves = ${solveTotal}, avg_time = ${avgTime} WHERE id = ${gameID}`;

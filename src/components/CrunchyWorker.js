@@ -20,7 +20,7 @@ async function processMetrics(gameID) {
 
         console.log(putData);
 
-        const putComputedURL = databaseURL + 'computed_game_metrics/' + gameID
+        const putComputedURL = databaseURL + 'computed_game_metrics/' + gameID;
         await axios.put(putComputedURL, putData);
         return averageTime;
     } else {

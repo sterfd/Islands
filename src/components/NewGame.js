@@ -17,7 +17,6 @@ export async function NewGame(boardSize, onNewGame, userID) {
     const starting = JSON.parse(data.board);
     const solution = JSON.parse(data.solution);
 
-
     const computedMetricWorker = new Worker(new URL('./CrunchyWorker.js', import.meta.url));
     computedMetricWorker.addEventListener('message', (event) => {
         const avgTime = event.data;

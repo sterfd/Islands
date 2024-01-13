@@ -5,7 +5,7 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
     const [userStats, setUserStats] = useState({});
     console.log('gameData prop into userStats', gameData);
     useEffect(() => {
-        const stats = gameData.reduce((accumulator, game) => {
+        const stats = gameData.rows.reduce((accumulator, game) => {
             const { solve_time_secs, size } = game;
             if (!accumulator[size]) {
                 accumulator[size] = {
@@ -44,7 +44,7 @@ export default function UserStats({ isOpen, displayName, gameData, onSignOut }) 
     return (
         <div className='log-in-page'>
             <h2>Hello {displayName}!</h2>
-            <h1>You have solved {gameData.length} games in total!</h1>
+            <h1>You have solved {gameData.rows.length} games in total!</h1>
             <div>
                 {Object.entries(userStats).map(([size, data]) => (
                     <div className='stat-container' key={size}>

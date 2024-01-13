@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function About() {
-
     return (
         <div className='sub-menu'>
             <p>This game is based on Nurikabe by the publisher Nikoli!</p>

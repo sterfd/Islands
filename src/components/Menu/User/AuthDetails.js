@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from '../../firebase';
-import { onIdTokenChanged, signOut } from 'firebase/auth';
+// import { auth } from '../../firebase';
+import { getAuth, onIdTokenChanged, signOut } from 'firebase/auth';
 
 export default function AuthDetails() {
     const [authUser, setAuthUser] = useState(null);
+    const auth = getAuth();
 
     useEffect(() => {
         const listen = onIdTokenChanged(auth, (user) => {

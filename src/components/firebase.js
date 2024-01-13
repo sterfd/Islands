@@ -3,7 +3,6 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 
-console.log('i am being initialized');
 
 // Access Firebase configuration
 const firebaseConfig = {

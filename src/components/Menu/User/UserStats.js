@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function UserStats({ isOpen, displayName, gameData, onSignOut }) {
     const [userStats, setUserStats] = useState({});
-
+    console.log('gameData prop into userStats', gameData);
     useEffect(() => {
         const stats = gameData.reduce((accumulator, game) => {
             const { solve_time_secs, size } = game;

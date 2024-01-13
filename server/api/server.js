@@ -44,20 +44,20 @@ server.get('/games/:boardsize/:userID', async (req, res) => {
     }
 });
 
-server.get('/allgames/:userID', async (req, res) => {
-    try {
-        const client = await pool.connect();
-        const gameQuery = `SELECT * FROM games WHERE games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
-        const game = await client.query(gameQuery);
-        client.release();
-        const selectedGame = game.rowCount;
-        res.status(200).json(selectedGame); // Sending the selected game as JSON
+// server.get('/allgames/:userID', async (req, res) => {
+//     try {
+//         const client = await pool.connect();
+//         const gameQuery = `SELECT * FROM games WHERE games.id NOT IN (SELECT game_metrics.id FROM game_metrics WHERE game_metrics.user_id = '${req.params.userID}')`;
+//         const game = await client.query(gameQuery);
+//         client.release();
+//         const selectedGame = game.rowCount;
+//         res.status(200).json(selectedGame); // Sending the selected game as JSON
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error getting game.' })
-    }
-});
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: 'Error getting game.' })
+//     }
+// });
 
 server.get('/game_metrics/:id', async (req, res) => {
     // GET game metrics of puzzle with id
@@ -120,8 +120,6 @@ server.put('/computed_game_metrics/:id', async (req, res) => {
 server.get('/users/:id', async (req, res) => {
     // GET user info and stats
     try {
-        // const query = await db.select('game_metrics.solve_time_secs', 'games.size').where({ user_id: req.params.id }).from('game_metrics').join('games', { 'games.id': 'game_metrics.id' });
-        // res.status(200).json(query);
         const client = await pool.connect();
         const userMetricQuery = `SELECT game_metrics.solve_time_secs, games.size FROM game_metrics JOIN games ON game_metrics.id = games.id WHERE user_id = '${req.params.id}'`;
         const metrics = await client.query(userMetricQuery);

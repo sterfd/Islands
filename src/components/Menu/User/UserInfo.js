@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 import axios from 'axios';
 import UserAuth from './UserAuth';
 import UserStats from './UserStats';
-import { signOut } from 'firebase/auth';
+// import { signOut } from 'firebase/auth';
 // import { auth } from '../../firebase';
 
 export default function User() {
@@ -32,7 +32,7 @@ export default function User() {
                 const user = auth.currentUser;
                 if (user) {
                     setUsername(user.displayName);
-                    const response = await axios.get('https://sterfd-islands-7f98ffd68a4e.herokuapp.com/' + user.uid);
+                    const response = await axios.get('https://sterfd-islands-7f98ffd68a4e.herokuapp.com/users/' + user.uid);
                     setGameData(response.data);
                 } else {
                     setUsername(null);

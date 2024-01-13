@@ -11,10 +11,8 @@ async function processMetrics(gameID) {
     const metricURL = databaseURL + 'game_metrics/' + gameID;
     // const { data } = await axios.get('http://localhost:8888/game_metrics/' + gameID);
     const { data } = await axios.get(metricURL);
-    console.log(data);
-    if (data.rowCount === 0) {
-        return 0;
-    } else {
+    console.log('worker, gameID', gameID, 'data', data);
+    if (Array.isArray(data.rows) && data.rows.length > 0) {
         const solveTimes = data.map((entry) => entry.solve_time_secs);
         const sumTimes = solveTimes.reduce((acc, time) => acc + time, 0);
         const averageTime = Math.floor(sumTimes / data.length);
@@ -22,6 +20,8 @@ async function processMetrics(gameID) {
         const putComputedURL = databaseURL + 'computed_game_metrics/' + gameID
         await axios.put(putComputedURL, putData);
         return averageTime;
+    } else {
+        return 0;
     }
 }
 

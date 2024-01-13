@@ -89,10 +89,10 @@ server.get('/computed_game_metrics/:id', async (req, res) => {
 
 server.post('/game_metrics', async (req, res) => {
     // POST game stats
-    const { id, userID, solveTime, solveDate } = req.body;
+    const { id, user_id, solve_time_secs, solve_date_yymmdd } = req.body;
     try {
         const client = await pool.connect();
-        const postMetricQuery = `INSERT INTO game_metrics (id, user_id, solve_time_secs, solve_date_yymmdd) VALUES (${id}, '${userID}', ${solveTime}, ${solveDate})`;
+        const postMetricQuery = `INSERT INTO game_metrics (id, user_id, solve_time_secs, solve_date_yymmdd) VALUES (${id}, '${user_id}', ${solve_time_secs}, ${solve_date_yymmdd})`;
         const metrics = await client.query(postMetricQuery);
         client.release();
         res.status(201).json(metrics);
@@ -101,14 +101,9 @@ server.post('/game_metrics', async (req, res) => {
     }
 });
 
-server.put('/computed_game_metrics/:id', async (req, res) => {
+server.put('/computed_game_metrics/', async (req, res) => {
     // PUT computed game stats (avg and number of solves) for puzzle with id'
     const { id, number_of_solves, avg_time } = req.body;
-    const gameID = req.params.id;
-
-    console.log('req.body', req.body);
-    console.log(id, number_of_solves, avg_time);
-
     try {
         const client = await pool.connect();
         const putMetricQuery = `UPDATE computed_game_metrics SET number_of_solves = ${number_of_solves}, avg_time = ${avg_time} WHERE id = ${id}`;

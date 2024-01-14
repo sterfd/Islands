@@ -14,7 +14,7 @@ export default function User() {
     async function handleSignOut() {
         try {
             const response = await signOut(auth);
-            console.log(response);
+            // console.log(response);
             setUsername(null);
         } catch (error) {
             console.log(error);
@@ -33,7 +33,8 @@ export default function User() {
                 if (user) {
                     setUsername(user.displayName);
                     const response = await axios.get('https://sterfd-islands-7f98ffd68a4e.herokuapp.com/users/' + user.uid);
-                    setGameData(response.data);
+                    // console.log('user info', response.data.rows);
+                    setGameData(response.data.rows);
                 } else {
                     setUsername(null);
                 }
